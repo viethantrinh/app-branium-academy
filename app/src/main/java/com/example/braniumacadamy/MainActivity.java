@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, VerificationActivity.class);
             startActivity(intent);
         });
-        //hghg
 
+        //test
     }
 }
