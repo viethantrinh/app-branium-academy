@@ -21,8 +21,10 @@
     <string name="text_enter_code">Enter your code we send to ********@gmail.com</string>
     <string name="text_enter_code_content">We sen a 6-digit code to your email address. Enter that code to reset password</string>
     <string name="text_button_verify">Verify</string>
-    <string name="text_enter_new_password" >Enter your new password</string>
+    <string name="text_enter_new_password">Enter your new password</string>
     <string name="text_new_password">New Password</string>
     <string name="text_confirm_new_password">Confirm New Password</string>
     <string name="text_button_reset_password">Reset Password</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
