@@ -25,4 +25,21 @@
     <string name="text_new_password">New Password</string>
     <string name="text_confirm_new_password">Confirm New Password</string>
     <string name="text_button_reset_password">Reset Password</string>
+    <string name="txt_full_name">Full Name</string>
+    <string name="txt_role">Role</string>
+    <string name="txt_email">Email</string>
+    <string name="txt_user_infor">User infor</string>
+    <string name="txt_update_information">Update information</string>
+    <string name="txt_change_password">Change password</string>
+    <string name="txt_shopping_cart">Shopping cart</string>
+    <string name="txt_information">Information</string>
+    <string name="txt_update_your_information">Update your information</string>
+    <string name="txt_address">Address</string>
+    <string name="txt_day_of_birth">Day of birth</string>
+    <string name="txt_mm_dd_yyyy">MM/DD/YYYY</string>
+    <string name="txt_save">Save</string>
+    <string name="txt_cancel">Cancel</string>
+    <string name="txt_photo">Photo</string>
+    <string name="txt_image_preview">Image preview</string>
+    <string name="txt_update_new_image">Update new image</string>
 </resources>

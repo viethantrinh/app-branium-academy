@@ -5,4 +5,5 @@
     <color name="primary">#F95E0A</color>
     <color name="hint_color">#A0A0A0</color>
     <color name="box_stroke_color">#fdb274</color>
+    <color name="grey">#696C70</color>
 </resources>
