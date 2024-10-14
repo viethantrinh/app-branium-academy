@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "BraniumAcadamy"
+rootProject.name = "app-branium-academy-compose"
 include(":app")
- 

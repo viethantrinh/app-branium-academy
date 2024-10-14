@@ -1,0 +1,203 @@
+package net.branium.ui.screeen.auth
+
+import android.media.Image
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import net.branium.R
+import net.branium.ui.theme.textFieldColors
+
+@Composable
+fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
+    var password by remember { mutableStateOf("") }
+    var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPassword by remember { mutableStateOf("") }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
+    var showPwdEnabled by remember { mutableStateOf(false) }
+    var showConfirmPwdEnabled by remember { mutableStateOf(false) }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(start = 24.dp, end = 24.dp, top = 118.dp)
+            .background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.image_brand_logo),
+            contentDescription = "app's logo",
+            contentScale = ContentScale.Fit
+        )
+        Spacer(modifier = Modifier.height(40.dp))
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            label = { Text(text = "First name", color = Color.DarkGray) },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = textFieldColors()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            label = { Text(text = "Last name", color = Color.DarkGray) },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = textFieldColors()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            label = { Text(text = "Email", color = Color.DarkGray) },
+            singleLine = true,
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = textFieldColors()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = password,
+            onValueChange = {
+                showPwdEnabled = if (it.isNotBlank()) true else !showPwdEnabled
+                password = it
+            },
+            label = { Text(text = "Password", color = Color.DarkGray) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            colors = textFieldColors(),
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (passwordVisible)
+                    ImageVector.vectorResource(id = R.drawable.icon_visibility_off_24)
+                else
+                    ImageVector.vectorResource(id = R.drawable.icon_visibility_24)
+                IconButton(
+                    onClick = { passwordVisible = !passwordVisible },
+                    enabled = showPwdEnabled
+                ) {
+                    Icon(imageVector = icon, contentDescription = "password visibility")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = {
+                showConfirmPwdEnabled = if (it.isNotBlank()) true else !showConfirmPwdEnabled
+                confirmPassword = it
+
+            },
+            label = { Text(text = "Confirm password", color = Color.DarkGray) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            colors = textFieldColors(),
+            trailingIcon = {
+                val icon = if (confirmPasswordVisible)
+                    ImageVector.vectorResource(id = R.drawable.icon_visibility_off_24)
+                else
+                    ImageVector.vectorResource(id = R.drawable.icon_visibility_24)
+                IconButton(
+                    onClick = { confirmPasswordVisible = !confirmPasswordVisible },
+                    enabled = showConfirmPwdEnabled
+                ) {
+                    Icon(imageVector = icon, contentDescription = "confirm password visibility")
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+            modifier = Modifier.align(Alignment.End),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                text = "Already have an account?",
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Login",
+                style = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(color = 0xFFF95E0A),
+                    fontSize = 14.sp
+                ),
+                modifier = Modifier.clickable(onClick = onNavigateToSignInScreen)
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            onClick = { /* TODO */ },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFF95E0A),
+                contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(size = 8.dp)
+        ) {
+            Text(text = "Sign up")
+        }
+    }
+}
+
+
+@Composable
+@Preview(showBackground = true)
+fun SignUpScreenPreview() {
+    SignUpScreen({})
+}
