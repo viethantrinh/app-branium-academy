@@ -1,4 +1,4 @@
-package net.branium.ui.screeen.test
+package net.branium.test
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

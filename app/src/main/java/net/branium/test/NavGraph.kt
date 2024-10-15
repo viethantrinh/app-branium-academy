@@ -1,4 +1,4 @@
-package net.branium.ui.navigation.test
+package net.branium.test
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
@@ -7,9 +7,6 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import net.branium.ui.screeen.test.HomeScreen
-import net.branium.ui.screeen.test.ProfileScreen
-import net.branium.ui.screeen.test.SettingScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {

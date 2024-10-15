@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import net.branium.ui.screeen.auth.ForgotPasswordScreen
 import net.branium.ui.screeen.auth.SignInScreen
 import net.branium.ui.screeen.auth.SignUpScreen
 import net.branium.ui.screeen.auth.SplashScreen
@@ -13,15 +14,16 @@ import net.branium.ui.screeen.auth.SplashScreen
 @Composable
 fun NavGraph(navController: NavHostController) {
     // define the nav host controller to control navigation of entire application
-    NavHost(navController = navController, startDestination = NavRoute.Splash.path) {
+    NavHost(navController = navController, startDestination = NavRoute.SplashScreen.route) {
         addSplashScreen(navController, this)
         addSignInScreen(navController, this)
         addSignUpScreen(navController, this)
+        addForgotPasswordScreen(navController, this)
     }
 }
 
 private fun addSplashScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
-    navGraphBuilder.composable(route = NavRoute.Splash.path) {
+    navGraphBuilder.composable(route = NavRoute.SplashScreen.route) {
         SplashScreen(
             onNavigate = {
                 // pop out the backstack of splash screen (prevent click return button occurred)
@@ -33,32 +35,53 @@ private fun addSplashScreen(navController: NavController, navGraphBuilder: NavGr
 
                 // otherwise => navigate to sign in screen
                 /* else( ... ) */
-                navController.navigate(NavRoute.SignIn.path)
+                navController.navigate(NavRoute.SignInScreen.route)
             })
     }
 }
 
-private fun addSignInScreen(navController: NavHostController, navGraphBuilder: NavGraphBuilder) {
+private fun addSignInScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(
-        route = NavRoute.SignIn.path
+        route = NavRoute.SignInScreen.route
     ) {
         SignInScreen(
-            onNavigateToForgotPasswordScreen = {},
-            onNavigateToSignUpScreen = {
-                navController.navigate(NavRoute.SignUp.path)
+            onNavigateToForgotPasswordScreen = {
+                navController.navigate(NavRoute.ForgotPasswordScreen.route)
             },
-            onNavigateToHomeScreen = {})
+            onNavigateToSignUpScreen = {
+                navController.navigate(NavRoute.SignUpScreen.route)
+            },
+            onNavigateToHomeScreen = {}
+        )
     }
 }
 
-private fun addSignUpScreen(navController: NavHostController, navGraphBuilder: NavGraphBuilder) {
+private fun addSignUpScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(
-        route = NavRoute.SignUp.path
+        route = NavRoute.SignUpScreen.route
     ) {
         SignUpScreen(
             onNavigateToSignInScreen = {
-                navController.navigate(NavRoute.SignIn.path)
+                navController.popBackStack()
+                navController.navigate(NavRoute.SignInScreen.route)
             }
+        )
+    }
+}
+
+private fun addForgotPasswordScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder
+) {
+    navGraphBuilder.composable(
+        route = NavRoute.ForgotPasswordScreen.route
+    ) {
+        ForgotPasswordScreen(
+            onNavigateBackToSignInScreen = {
+                navController.popBackStack()
+                navController.navigate(NavRoute.SignInScreen.route)
+            },
+            onNavigateToCodeScreen = {}
         )
     }
 }

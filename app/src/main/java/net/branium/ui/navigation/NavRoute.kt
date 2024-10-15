@@ -1,7 +1,8 @@
 package net.branium.ui.navigation
 
-sealed class NavRoute(val path: String) {
-    data object Splash: NavRoute("splash")
-    data object SignIn: NavRoute("sign-in")
-    data object SignUp: NavRoute("sign-up")
+sealed class NavRoute(val route: String) {
+    object SplashScreen : NavRoute("splashscreen")
+    object SignInScreen : NavRoute("signinscrenn")
+    object SignUpScreen : NavRoute("signupscreen")
+    object ForgotPasswordScreen: NavRoute("forgotpasswordscreen")
 }

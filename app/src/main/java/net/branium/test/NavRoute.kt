@@ -1,4 +1,4 @@
-package net.branium.ui.navigation.test
+package net.branium.test
 
 sealed class NavRoute(val path: String) {
     object Home: NavRoute("home")
