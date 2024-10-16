@@ -1,20 +1,21 @@
 package net.branium.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import kotlinx.coroutines.delay
+import net.branium.ui.screeen.HomeScreen
 import net.branium.ui.screeen.auth.CodeResetScreen
 import net.branium.ui.screeen.auth.ForgotPasswordScreen
 import net.branium.ui.screeen.auth.ResetPasswordScreen
 import net.branium.ui.screeen.auth.SignInScreen
 import net.branium.ui.screeen.auth.SignUpScreen
-import net.branium.ui.screeen.auth.SplashScreen
+import net.branium.ui.screeen.SplashScreen
+import net.branium.util.TokenManager
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -26,23 +27,17 @@ fun NavGraph(navController: NavHostController) {
         addForgotPasswordScreen(navController, this)
         addCodeResetScreen(navController, this)
         addResetPasswordScreen(navController, this)
+        addHomeScreen(navController, this)
     }
 }
 
 private fun addSplashScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(route = NavRoute.SplashScreen.route) {
         SplashScreen(
-            onNavigate = {
+            onNavigate = { route ->
                 // pop out the backstack of splash screen (prevent click return button occurred)
                 navController.popBackStack()
-
-                // check if user already have token before or not (from SharePreference)
-                // if yes => navigate directly to home screen
-                /* TODO: implement token checking here */
-
-                // otherwise => navigate to sign in screen
-                /* else( ... ) */
-                navController.navigate(NavRoute.SignInScreen.route)
+                navController.navigate(route)
             })
     }
 }
@@ -58,7 +53,9 @@ private fun addSignInScreen(navController: NavController, navGraphBuilder: NavGr
             onNavigateToSignUpScreen = {
                 navController.navigate(NavRoute.SignUpScreen.route)
             },
-            onNavigateToHomeScreen = {}
+            onNavigateToHomeScreen = {
+                navController.navigate(NavRoute.HomeScreen.route)
+            }
         )
     }
 }
@@ -133,11 +130,22 @@ private fun addResetPasswordScreen(
             onNavigateToSignInScreen = {
                 navController.popBackStack()
                 navController.navigate(
-                    route =  NavRoute.SignInScreen.route,
+                    route = NavRoute.SignInScreen.route,
                     navOptions = NavOptions.Builder().setLaunchSingleTop(true)
                         .setRestoreState(true).build()
                 )
             }
         )
+    }
+}
+
+private fun addHomeScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder
+) {
+    navGraphBuilder.composable(
+        route = NavRoute.HomeScreen.route
+    ) {
+        HomeScreen()
     }
 }

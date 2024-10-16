@@ -7,21 +7,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import net.branium.data.model.dto.request.IntrospectRequest
 import net.branium.data.model.dto.request.SignInRequest
 import net.branium.data.repository.AuthRepositoryImpl
 import net.branium.data.retrofit.ResultResponse
 
-class SignInViewModel : ViewModel() {
+class SplashScreenViewModel : ViewModel() {
     private val authRepository = AuthRepositoryImpl()
     private var _apiResponseState = mutableStateOf<ApiResponseState?>(null)
     val apiResponseState: State<ApiResponseState?> = _apiResponseState
 
-    fun signIn(request: SignInRequest, context: Context) {
+    private var _authState = mutableStateOf<AuthState>(AuthState.Processing)
+    val authState: State<AuthState> = _authState
+
+    fun introspectToken(request: IntrospectRequest) {
         viewModelScope.launch {
-            when (val response = authRepository.signIn(request, context)) {
+            when (val response = authRepository.introspectToken(request)) {
                 is ResultResponse.Success -> {
                     _apiResponseState.value = ApiResponseState.Succeeded
-                    _apiResponseState.value?.message = response.data.toString()
+                    if (response.data == true) {
+                        _authState.value = AuthState.Authenticated
+                    } else {
+                        _authState.value = AuthState.UnAuthenticated
+                    }
                 }
 
                 is ResultResponse.Error -> {
@@ -35,5 +43,11 @@ class SignInViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    sealed class AuthState() {
+        object Authenticated : AuthState()
+        object UnAuthenticated : AuthState()
+        object Processing : AuthState()
     }
 }

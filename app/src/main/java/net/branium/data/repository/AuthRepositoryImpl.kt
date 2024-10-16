@@ -1,16 +1,42 @@
 package net.branium.data.repository
 
+import android.content.Context
+import android.media.session.MediaSession.Token
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.branium.data.model.dto.request.IntrospectRequest
 import net.branium.data.model.dto.request.ResetPasswordRequest
+import net.branium.data.model.dto.request.SignInRequest
 import net.branium.data.model.dto.request.SignUpRequest
+import net.branium.data.model.dto.response.ApiResponse
+import net.branium.data.model.dto.response.ErrorResponse
+import net.branium.data.model.dto.response.SignInResponse
 import net.branium.data.retrofit.AuthApiService
 import net.branium.data.retrofit.ResultResponse
 import net.branium.data.retrofit.RetrofitHelper
+import net.branium.util.TokenManager
+import retrofit2.Response
 
 class AuthRepositoryImpl : AuthRepository {
     private val authApiService: AuthApiService by lazy {
         RetrofitHelper.getInstance().create(AuthApiService::class.java)
+    }
+
+    override suspend fun signIn(request: SignInRequest, context: Context): ResultResponse<String> {
+        return withContext(Dispatchers.IO) {
+            val response = authApiService.signIn(request)
+            if (response.isSuccessful) {
+                // save the token to SharePreference
+                val token = response.body()?.result?.token
+                val tokenManager = TokenManager(context)
+                tokenManager.storeToken(token.toString())
+                ResultResponse.Success(response.body()?.message)
+            } else {
+                val errorRes = parseErrorResponse(response)
+                ResultResponse.Error(Exception(errorRes?.message))
+            }
+        }
     }
 
     override suspend fun signUp(request: SignUpRequest): ResultResponse<String> {
@@ -20,6 +46,19 @@ class AuthRepositoryImpl : AuthRepository {
                 ResultResponse.Success("Sign up successful! Please check your email address to enable your account!")
             } else {
                 ResultResponse.Error(Exception("Sign up failed due to something wrong!"))
+            }
+        }
+    }
+
+    override suspend fun introspectToken(request: IntrospectRequest): ResultResponse<Boolean> {
+        return withContext(Dispatchers.IO) {
+            val response = authApiService.introspectToken(request)
+            if (response.isSuccessful) {
+                val responseBody = response.body()!!
+                val isValid = responseBody.result.valid
+                ResultResponse.Success(isValid)
+            } else {
+                ResultResponse.Error(Exception("Something wrong!"))
             }
         }
     }
@@ -58,6 +97,18 @@ class AuthRepositoryImpl : AuthRepository {
         }
     }
 
-    override suspend fun signIn() {
+    // Function to parse the error body to ErrorResponse object
+    private fun parseErrorResponse(response: Response<ApiResponse<SignInResponse>>): ErrorResponse? {
+        val converter = RetrofitHelper.getInstance()
+            .responseBodyConverter<ErrorResponse>(ErrorResponse::class.java, arrayOfNulls(0))
+
+        return try {
+            response.errorBody()?.let {
+                converter.convert(it) // Convert the error body to ErrorResponse
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }
