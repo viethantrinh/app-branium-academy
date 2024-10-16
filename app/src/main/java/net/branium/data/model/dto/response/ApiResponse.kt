@@ -1,4 +1,4 @@
-package net.branium.data.model.dto
+package net.branium.data.model.dto.response
 
 data class ApiResponse<T>(
     val code: Int,

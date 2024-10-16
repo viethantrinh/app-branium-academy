@@ -1,4 +1,4 @@
-package net.branium.data.model.dto
+package net.branium.data.model.dto.request
 
 
 data class ResetPasswordRequest(

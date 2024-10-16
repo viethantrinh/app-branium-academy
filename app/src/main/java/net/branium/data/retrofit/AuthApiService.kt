@@ -1,8 +1,7 @@
 package net.branium.data.retrofit
 
-import net.branium.data.model.dto.ApiResponse
-import net.branium.data.model.dto.ResetPasswordRequest
-import retrofit2.Call
+import net.branium.data.model.dto.response.ApiResponse
+import net.branium.data.model.dto.request.ResetPasswordRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

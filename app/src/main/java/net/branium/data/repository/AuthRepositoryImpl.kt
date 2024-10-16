@@ -1,11 +1,8 @@
 package net.branium.data.repository
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.branium.data.model.dto.ApiResponse
-import net.branium.data.model.dto.ResetPasswordRequest
+import net.branium.data.model.dto.request.ResetPasswordRequest
 import net.branium.data.retrofit.AuthApiService
 import net.branium.data.retrofit.ResultResponse
 import net.branium.data.retrofit.RetrofitHelper
