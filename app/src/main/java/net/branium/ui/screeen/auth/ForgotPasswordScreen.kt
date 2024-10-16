@@ -1,5 +1,7 @@
 package net.branium.ui.screeen.auth
 
+import android.os.Looper
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,25 +16,47 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import net.branium.ui.theme.textFieldColors
+import net.branium.viewmodel.ForgotPasswordViewModel
 
 @Composable
 fun ForgotPasswordScreen(
     onNavigateBackToSignInScreen: () -> Unit,
-    onNavigateToCodeScreen: () -> Unit
+    onNavigateToCodeResetScreen: (resetEmail: String) -> Unit
 ) {
+    val context = LocalContext.current
+    val forgotPwdViewModel: ForgotPasswordViewModel = viewModel()
+    var resetEmail by remember { mutableStateOf("") }
+    var isError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
+    var sendCodeBtnEnabled by remember { mutableStateOf(false) }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,29 +90,59 @@ fun ForgotPasswordScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = resetEmail,
+            onValueChange = {
+                resetEmail = it
+
+                if (it.isEmpty()) {
+                    isError = true
+                    errorMessage = "This field can't be empty."
+                    sendCodeBtnEnabled = false
+                } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(it).matches()) {
+                    isError = true
+                    errorMessage = "Please enter a valid email address."
+                    sendCodeBtnEnabled = false
+                } else {
+                    isError = false
+                    errorMessage = ""
+                    sendCodeBtnEnabled = true
+                }
+            },
             label = { Text(text = "Email", color = Color.DarkGray) },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth(),
-            colors = textFieldColors()
+            colors = textFieldColors(),
+            isError = isError,
         )
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp)
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = {},
+            onClick = {
+                forgotPwdViewModel.sendResetEmail(resetEmail)
+                onNavigateToCodeResetScreen(resetEmail)
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFF95E0A),
                 contentColor = Color.White
             ),
-            shape = RoundedCornerShape(size = 8.dp)
+            shape = RoundedCornerShape(size = 8.dp),
+            enabled = sendCodeBtnEnabled
         ) {
             Text(text = "Send code")
         }
     }
 }
+
 
 @Composable
 @Preview(showBackground = true)
