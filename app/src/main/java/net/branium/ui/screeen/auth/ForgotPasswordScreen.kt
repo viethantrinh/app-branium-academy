@@ -50,12 +50,22 @@ fun ForgotPasswordScreen(
     onNavigateToCodeResetScreen: (resetEmail: String) -> Unit
 ) {
     val context = LocalContext.current
-    val forgotPwdViewModel: ForgotPasswordViewModel = viewModel()
     var resetEmail by remember { mutableStateOf("") }
     var isError by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
     var sendCodeBtnEnabled by remember { mutableStateOf(false) }
 
+    val forgotPwdViewModel: ForgotPasswordViewModel = viewModel()
+
+    LaunchedEffect(forgotPwdViewModel.isSent.value) {
+        when (forgotPwdViewModel.isSent.value) {
+            true -> {
+                Toast.makeText(context, forgotPwdViewModel.message.value, Toast.LENGTH_SHORT).show()
+                onNavigateToCodeResetScreen(resetEmail)
+            }
+            false -> Toast.makeText(context, forgotPwdViewModel.message.value, Toast.LENGTH_SHORT).show()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -127,7 +137,6 @@ fun ForgotPasswordScreen(
         Button(
             onClick = {
                 forgotPwdViewModel.sendResetEmail(resetEmail)
-                onNavigateToCodeResetScreen(resetEmail)
             },
             modifier = Modifier
                 .fillMaxWidth(),

@@ -12,7 +12,7 @@ import retrofit2.http.Query
 interface AuthApiService {
 
     @GET(value = "auth/reset-password")
-    suspend fun resetPassword(@Query(value = "email") email: String): Response<Unit>
+    suspend fun resetPassword(@Query(value = "email") email: String): Response<Void>
 
     @GET(value = "auth/verify")
     fun verifyCode(@Query(value = "code") code: String): Call<Void>

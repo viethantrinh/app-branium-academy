@@ -103,12 +103,11 @@ private fun addCodeResetScreen(
     ) {
         val resetEmail =
             navController.previousBackStackEntry?.savedStateHandle?.get<String>("resetEmail")
-
         if (!resetEmail.isNullOrBlank()) {
             CodeResetScreen(
                 resetEmail = resetEmail,
                 onNavigateBackToForgotPwdScreen = {
-                    navController.navigateUp()
+                    navController.navigate(NavRoute.ForgotPasswordScreen.route)
                 },
                 onNavigateToResetPasswordScreen = { code, email ->
                     navController.currentBackStackEntry?.savedStateHandle?.set("code", code)

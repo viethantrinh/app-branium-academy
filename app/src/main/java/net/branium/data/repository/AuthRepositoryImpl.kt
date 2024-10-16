@@ -14,10 +14,14 @@ class AuthRepositoryImpl : AuthRepository {
         RetrofitHelper.getInstance().create(AuthApiService::class.java)
     }
 
-    override suspend fun sendRestEmail(resetEmail: String): Boolean {
-        return withContext(context = Dispatchers.IO) {
+    override suspend fun sendResetEmail(resetEmail: String): ResultResponse<Any> {
+        return withContext(Dispatchers.IO) {
             val response = authApiService.resetPassword(resetEmail)
-            response.isSuccessful
+            if (response.isSuccessful) {
+                ResultResponse.Success("Send email succeeded!")
+            } else {
+                ResultResponse.Error(Exception("Send email failed!"))
+            }
         }
     }
 
