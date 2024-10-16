@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.R
 import net.branium.ui.theme.textFieldColors
+import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.ForgotPasswordViewModel
 import net.branium.viewmodel.ResetPasswordViewModel
 
@@ -47,6 +49,26 @@ fun ResetPasswordScreen(code: String?, email: String?, onNavigateToSignInScreen:
 
     val context = LocalContext.current
     val resetPasswordViewModel: ResetPasswordViewModel = viewModel()
+
+    LaunchedEffect(key1 = resetPasswordViewModel.apiResponseState.value) {
+        when (val stateValue = resetPasswordViewModel.apiResponseState.value) {
+            is ApiResponseState.Succeeded -> {
+                onNavigateToSignInScreen()
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponseState.Failed -> {
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponseState.Processing -> {
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -120,9 +142,6 @@ fun ResetPasswordScreen(code: String?, email: String?, onNavigateToSignInScreen:
             onClick = {
                 if (code != null && email != null) {
                     resetPasswordViewModel.resetPassword(code, email, password)
-                    if (resetPasswordViewModel._resetSucceeded) {
-                        onNavigateToSignInScreen()
-                    }
                 }
             },
             modifier = Modifier

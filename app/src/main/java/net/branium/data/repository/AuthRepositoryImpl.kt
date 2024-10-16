@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import net.branium.data.model.dto.ApiResponse
 import net.branium.data.model.dto.ResetPasswordRequest
 import net.branium.data.retrofit.AuthApiService
 import net.branium.data.retrofit.ResultResponse
@@ -36,9 +37,16 @@ class AuthRepositoryImpl : AuthRepository {
         }
     }
 
-    override fun resetPassword(request: ResetPasswordRequest): Boolean {
-        val response = authApiService.resetPassword(request).execute()
-        return response.isSuccessful
+    override suspend fun resetPassword(request: ResetPasswordRequest): ResultResponse<String> {
+        return withContext(Dispatchers.IO) {
+            val response = authApiService.resetPassword(request)
+            val responseBody = response.body()!!
+            if (responseBody.code == 1000) {
+                ResultResponse.Success(responseBody.message)
+            } else {
+                ResultResponse.Error(Exception(responseBody.message))
+            }
+        }
     }
 
     override suspend fun signIn() {

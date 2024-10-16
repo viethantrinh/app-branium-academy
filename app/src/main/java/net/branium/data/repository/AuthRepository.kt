@@ -8,7 +8,7 @@ import net.branium.data.retrofit.RetrofitHelper
 interface AuthRepository {
     suspend fun sendResetEmail(resetEmail: String): ResultResponse<Any>
     suspend fun verifyCode(code: String): ResultResponse<Any>
-    fun resetPassword(request: ResetPasswordRequest): Boolean
+    suspend fun resetPassword(request: ResetPasswordRequest): ResultResponse<String>
     suspend fun signIn()
 
 }
