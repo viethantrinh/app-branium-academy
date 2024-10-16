@@ -62,8 +62,7 @@ private fun addSignUpScreen(navController: NavController, navGraphBuilder: NavGr
     ) {
         SignUpScreen(
             onNavigateToSignInScreen = {
-                navController.popBackStack()
-                navController.navigate(NavRoute.SignInScreen.route)
+                navController.navigateUp()
             }
         )
     }
@@ -78,8 +77,7 @@ private fun addForgotPasswordScreen(
     ) {
         ForgotPasswordScreen(
             onNavigateBackToSignInScreen = {
-                navController.popBackStack()
-                navController.navigate(NavRoute.SignInScreen.route)
+                navController.navigateUp()
             },
             onNavigateToCodeScreen = {}
         )
