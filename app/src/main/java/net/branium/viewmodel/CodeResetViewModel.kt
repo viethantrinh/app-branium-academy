@@ -15,14 +15,32 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.branium.data.repository.AuthRepository
 import net.branium.data.repository.AuthRepositoryImpl
+import net.branium.data.retrofit.ResultResponse
 
 class CodeResetViewModel : ViewModel() {
     private val authRepository = AuthRepositoryImpl()
-    var _verifySucceeded by mutableStateOf(false)
-//    val verifySucceeded = _verifySucceeded
+    private var _apiResponseState = mutableStateOf<ApiResponseState?>(null)
+    val apiResponseState: State<ApiResponseState?> = _apiResponseState
 
-    suspend fun verifyCode(code: String) {
-        val succeeded = authRepository.verifyCode(code)
+    fun verifyCode(code: String) {
+        viewModelScope.launch {
+            when (val response = authRepository.verifyCode(code)) {
+                is ResultResponse.Success -> {
+                    _apiResponseState.value = ApiResponseState.Succeeded
+                    _apiResponseState.value?.message = response.data.toString()
+                }
+
+                is ResultResponse.Error -> {
+                    _apiResponseState.value = ApiResponseState.Failed
+                    _apiResponseState.value?.message = response.exception.message.toString()
+                }
+
+                else -> {
+                    _apiResponseState.value = ApiResponseState.Processing
+                    _apiResponseState.value?.message = "Processing"
+                }
+            }
+        }
     }
 
 

@@ -30,6 +30,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -45,6 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CodeResetViewModel
 
 @Composable
@@ -57,6 +59,26 @@ fun CodeResetScreen(
     var otpValues = remember { mutableStateListOf("", "", "", "", "", "") }
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = codeResetViewModel.apiResponseState.value) {
+        when (val stateValue = codeResetViewModel.apiResponseState.value) {
+            is ApiResponseState.Succeeded -> {
+                onNavigateToResetPasswordScreen(otpValues.joinToString(""), resetEmail)
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponseState.Failed -> {
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponseState.Processing -> {
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -136,16 +158,8 @@ fun CodeResetScreen(
         Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
-                // send request to server to check if verifying is oke
                 val code = otpValues.joinToString("")
-//                codeResetViewModel.verifyCode(code = code)
-                // if is ok => navigate to this
-                if (codeResetViewModel._verifySucceeded) {
-                    onNavigateToResetPasswordScreen(code, resetEmail)
-                } else {
-                    Toast.makeText(context, "Verify unsuccessful! Try again", Toast.LENGTH_SHORT)
-                        .show()
-                }
+                codeResetViewModel.verifyCode(code)
             },
             modifier = Modifier
                 .fillMaxWidth(),
