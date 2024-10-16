@@ -1,6 +1,7 @@
 package net.branium.ui.screeen.auth
 
 import android.media.Image
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +24,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.AnnotatedString
@@ -44,17 +47,47 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.R
+import net.branium.data.model.dto.request.SignUpRequest
 import net.branium.ui.theme.textFieldColors
+import net.branium.viewmodel.ApiResponseState
+import net.branium.viewmodel.SignUpViewModel
 
 @Composable
 fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPassword by remember { mutableStateOf("") }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
     var showPwdEnabled by remember { mutableStateOf(false) }
     var showConfirmPwdEnabled by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val signUpViewModel: SignUpViewModel = viewModel()
+
+    LaunchedEffect(key1 = signUpViewModel.apiResponseState.value) {
+        when (val stateValue = signUpViewModel.apiResponseState.value) {
+            is ApiResponseState.Succeeded -> {
+                onNavigateToSignInScreen()
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponseState.Failed -> {
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            is ApiResponseState.Processing -> {
+                Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> Unit
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -69,8 +102,10 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(40.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = firstName,
+            onValueChange = {
+                firstName = it
+            },
             label = { Text(text = "First name", color = Color.DarkGray) },
             singleLine = true,
             modifier = Modifier
@@ -79,8 +114,10 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = lastName,
+            onValueChange = {
+                lastName = it
+            },
             label = { Text(text = "Last name", color = Color.DarkGray) },
             singleLine = true,
             modifier = Modifier
@@ -89,8 +126,10 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = email,
+            onValueChange = {
+                email = it
+            },
             label = { Text(text = "Email", color = Color.DarkGray) },
             singleLine = true,
             modifier = Modifier
@@ -142,6 +181,7 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
                 imeAction = ImeAction.Done
             ),
             colors = textFieldColors(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (confirmPasswordVisible)
                     ImageVector.vectorResource(id = R.drawable.icon_visibility_off_24)
@@ -181,7 +221,15 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
-            onClick = { /* TODO */ },
+            onClick = {
+                val signUpRequest = SignUpRequest(
+                    firstName = firstName,
+                    lastName = lastName,
+                    email = email,
+                    password = password
+                )
+                signUpViewModel.signUp(request = signUpRequest)
+            },
             modifier = Modifier
                 .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(

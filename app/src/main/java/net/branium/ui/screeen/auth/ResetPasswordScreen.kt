@@ -122,6 +122,7 @@ fun ResetPasswordScreen(code: String?, email: String?, onNavigateToSignInScreen:
                 imeAction = ImeAction.Done
             ),
             colors = textFieldColors(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val icon = if (confirmPasswordVisible)
                     ImageVector.vectorResource(id = R.drawable.icon_visibility_off_24)
