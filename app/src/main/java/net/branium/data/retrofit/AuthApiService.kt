@@ -15,7 +15,7 @@ interface AuthApiService {
     suspend fun resetPassword(@Query(value = "email") email: String): Response<Void>
 
     @GET(value = "auth/verify")
-    fun verifyCode(@Query(value = "code") code: String): Call<Void>
+    suspend fun verifyCode(@Query(value = "code") code: String): Response<Void>
 
     @POST(value = "auth/reset-password")
     fun resetPassword(@Body resetPasswordRequest: ResetPasswordRequest): Call<ApiResponse<Any>>

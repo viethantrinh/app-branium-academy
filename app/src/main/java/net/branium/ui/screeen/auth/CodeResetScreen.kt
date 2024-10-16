@@ -138,7 +138,7 @@ fun CodeResetScreen(
             onClick = {
                 // send request to server to check if verifying is oke
                 val code = otpValues.joinToString("")
-                codeResetViewModel.verifyCode(code = code)
+//                codeResetViewModel.verifyCode(code = code)
                 // if is ok => navigate to this
                 if (codeResetViewModel._verifySucceeded) {
                     onNavigateToResetPasswordScreen(code, resetEmail)

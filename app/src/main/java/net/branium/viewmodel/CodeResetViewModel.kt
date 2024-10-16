@@ -21,9 +21,8 @@ class CodeResetViewModel : ViewModel() {
     var _verifySucceeded by mutableStateOf(false)
 //    val verifySucceeded = _verifySucceeded
 
-    fun verifyCode(code: String) {
+    suspend fun verifyCode(code: String) {
         val succeeded = authRepository.verifyCode(code)
-        _verifySucceeded = succeeded
     }
 
 

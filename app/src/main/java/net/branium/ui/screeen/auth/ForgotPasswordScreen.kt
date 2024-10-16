@@ -43,6 +43,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.branium.ui.theme.textFieldColors
 import net.branium.viewmodel.ForgotPasswordViewModel
+import net.branium.viewmodel.ForgotPasswordViewModel.EmailSentState
 
 @Composable
 fun ForgotPasswordScreen(
@@ -57,13 +58,20 @@ fun ForgotPasswordScreen(
 
     val forgotPwdViewModel: ForgotPasswordViewModel = viewModel()
 
-    LaunchedEffect(forgotPwdViewModel.isSent.value) {
-        when (forgotPwdViewModel.isSent.value) {
-            true -> {
+    LaunchedEffect(forgotPwdViewModel.emailSentState.value) {
+        when (forgotPwdViewModel.emailSentState.value) {
+            is EmailSentState.SentSucceeded -> {
                 Toast.makeText(context, forgotPwdViewModel.message.value, Toast.LENGTH_SHORT).show()
                 onNavigateToCodeResetScreen(resetEmail)
             }
-            false -> Toast.makeText(context, forgotPwdViewModel.message.value, Toast.LENGTH_SHORT).show()
+
+            is EmailSentState.SentUnSucceeded -> {
+                Toast.makeText(context, forgotPwdViewModel.message.value, Toast.LENGTH_SHORT).show()
+            }
+
+            else -> {
+
+            }
         }
     }
 

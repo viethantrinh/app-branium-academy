@@ -25,13 +25,14 @@ class AuthRepositoryImpl : AuthRepository {
         }
     }
 
-    override fun verifyCode(code: String): Boolean {
-        return try {
-            val response = authApiService.verifyCode(code).execute()
-            response.isSuccessful
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
+    override suspend fun verifyCode(code: String): ResultResponse<Any> {
+        return withContext(Dispatchers.IO) {
+            val response = authApiService.verifyCode(code)
+            if (response.isSuccessful) {
+                ResultResponse.Success("Verify succeeded!")
+            } else {
+                ResultResponse.Error(Exception("Verify failed!"))
+            }
         }
     }
 
