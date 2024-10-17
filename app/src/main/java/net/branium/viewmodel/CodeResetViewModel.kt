@@ -10,15 +10,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.branium.data.repository.AuthRepository
 import net.branium.data.repository.AuthRepositoryImpl
 import net.branium.data.retrofit.ResultResponse
+import javax.inject.Inject
 
-class CodeResetViewModel : ViewModel() {
-    private val authRepository = AuthRepositoryImpl()
+@HiltViewModel
+class CodeResetViewModel @Inject constructor(private val authRepository: AuthRepositoryImpl) : ViewModel() {
     private var _apiResponseState = mutableStateOf<ApiResponseState?>(null)
     val apiResponseState: State<ApiResponseState?> = _apiResponseState
 

@@ -1,8 +1,6 @@
 package net.branium.data.repository
 
 import android.content.Context
-import android.media.session.MediaSession.Token
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.branium.data.model.dto.request.IntrospectRequest
@@ -15,12 +13,17 @@ import net.branium.data.model.dto.response.SignInResponse
 import net.branium.data.retrofit.AuthApiService
 import net.branium.data.retrofit.ResultResponse
 import net.branium.data.retrofit.RetrofitHelper
-import net.branium.util.TokenManager
+import net.branium.di.TokenManager
 import retrofit2.Response
+import retrofit2.Retrofit
+import javax.inject.Inject
+import javax.inject.Named
 
-class AuthRepositoryImpl : AuthRepository {
+class AuthRepositoryImpl
+@Inject constructor(@Named("RetrofitInstanceWithAuthInterceptor") private val retrofitInstance: Retrofit) : AuthRepository {
+
     private val authApiService: AuthApiService by lazy {
-        RetrofitHelper.getInstance().create(AuthApiService::class.java)
+        retrofitInstance.create(AuthApiService::class.java)
     }
 
     override suspend fun signIn(request: SignInRequest, context: Context): ResultResponse<String> {
@@ -99,7 +102,7 @@ class AuthRepositoryImpl : AuthRepository {
 
     // Function to parse the error body to ErrorResponse object
     private fun parseErrorResponse(response: Response<ApiResponse<SignInResponse>>): ErrorResponse? {
-        val converter = RetrofitHelper.getInstance()
+        val converter = retrofitInstance
             .responseBodyConverter<ErrorResponse>(ErrorResponse::class.java, arrayOfNulls(0))
 
         return try {

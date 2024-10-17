@@ -1,7 +1,6 @@
 package net.branium.ui.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -15,7 +14,6 @@ import net.branium.ui.screeen.auth.ResetPasswordScreen
 import net.branium.ui.screeen.auth.SignInScreen
 import net.branium.ui.screeen.auth.SignUpScreen
 import net.branium.ui.screeen.SplashScreen
-import net.branium.util.TokenManager
 
 @Composable
 fun NavGraph(navController: NavHostController) {

@@ -1,8 +1,11 @@
-package net.branium.util
+package net.branium.di
 
 import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
+import net.branium.util.Constants
+import javax.inject.Inject
 
-class TokenManager(context: Context) {
+class TokenManager (val context: Context) {
 
     private val sharedPreferences
     = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)

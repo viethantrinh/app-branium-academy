@@ -4,6 +4,10 @@ plugins {
 
     // add serialize and deserialize
     id("kotlin-parcelize")
+
+    // hilt di
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -54,11 +58,17 @@ android {
 
 dependencies {
     // add in more
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.coil.compose)
-    implementation(libs.androidx.navigation.compose)
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("androidx.navigation:navigation-compose:2.8.3")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+    // hilt di
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     // app
     implementation(libs.androidx.core.ktx)
@@ -77,3 +87,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
+}
+

@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,7 +57,7 @@ fun ForgotPasswordScreen(
     var errorMessage by remember { mutableStateOf("") }
     var sendCodeBtnEnabled by remember { mutableStateOf(false) }
 
-    val forgotPwdViewModel: ForgotPasswordViewModel = viewModel()
+    val forgotPwdViewModel: ForgotPasswordViewModel = hiltViewModel()
 
     LaunchedEffect(forgotPwdViewModel.emailSentState.value) {
         when (forgotPwdViewModel.emailSentState.value) {

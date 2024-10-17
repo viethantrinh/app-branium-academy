@@ -31,6 +31,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.R
 import net.branium.ui.theme.textFieldColors
@@ -48,7 +49,7 @@ fun ResetPasswordScreen(code: String?, email: String?, onNavigateToSignInScreen:
     var showConfirmPwdEnabled by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
-    val resetPasswordViewModel: ResetPasswordViewModel = viewModel()
+    val resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
 
     LaunchedEffect(key1 = resetPasswordViewModel.apiResponseState.value) {
         when (val stateValue = resetPasswordViewModel.apiResponseState.value) {

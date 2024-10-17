@@ -1,6 +1,5 @@
 package net.branium.ui.screeen
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,31 +12,23 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import net.branium.R
 import net.branium.data.model.dto.request.IntrospectRequest
 import net.branium.ui.navigation.NavRoute
-import net.branium.util.TokenManager
+import net.branium.di.TokenManager
 import net.branium.viewmodel.SplashScreenViewModel
 import net.branium.viewmodel.SplashScreenViewModel.AuthState
 
-@Composable
-fun SplashScreen(onNavigate: (route: String) -> Unit) {
-    val context = LocalContext.current
-    val splashScreenViewModel: SplashScreenViewModel = viewModel()
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.image_brand_logo),
-            contentDescription = "app's logo",
-            contentScale = ContentScale.Fit
-        )
-    }
+@Composable
+fun SplashScreen(
+    onNavigate: (route: String) -> Unit
+) {
+    val context = LocalContext.current
+    val splashScreenViewModel: SplashScreenViewModel = hiltViewModel()
 
     val tokenManager = TokenManager(context)
     val token = tokenManager.getToken()
@@ -50,7 +41,7 @@ fun SplashScreen(onNavigate: (route: String) -> Unit) {
     }
 
     LaunchedEffect(key1 = splashScreenViewModel.authState) {
-        delay(1500)
+        delay(100)
         when (splashScreenViewModel.authState.value) {
             is AuthState.Authenticated -> {
                 onNavigate(NavRoute.HomeScreen.route)
@@ -65,10 +56,17 @@ fun SplashScreen(onNavigate: (route: String) -> Unit) {
             }
         }
     }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.image_brand_logo),
+            contentDescription = "app's logo",
+            contentScale = ContentScale.Fit
+        )
+    }
 }
 
-@Composable
-@Preview(showBackground = true)
-fun SplashScreenPreview() {
-    SplashScreen({})
-}

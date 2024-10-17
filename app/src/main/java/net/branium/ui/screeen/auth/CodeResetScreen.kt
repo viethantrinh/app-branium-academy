@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CodeResetViewModel
@@ -55,7 +56,7 @@ fun CodeResetScreen(
     onNavigateBackToForgotPwdScreen: () -> Unit,
     onNavigateToResetPasswordScreen: (code: String, resetEmail: String) -> Unit
 ) {
-    val codeResetViewModel: CodeResetViewModel = viewModel()
+    val codeResetViewModel: CodeResetViewModel = hiltViewModel()
     var otpValues = remember { mutableStateListOf("", "", "", "", "", "") }
     val focusManager = LocalFocusManager.current
     val context = LocalContext.current

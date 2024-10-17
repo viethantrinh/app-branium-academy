@@ -5,13 +5,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import net.branium.data.repository.AuthRepositoryImpl
 import net.branium.data.retrofit.ResultResponse
+import javax.inject.Inject
 
-class ForgotPasswordViewModel : ViewModel() {
-    private val authRepository = AuthRepositoryImpl()
-
+@HiltViewModel
+class ForgotPasswordViewModel @Inject constructor(private val authRepository: AuthRepositoryImpl) : ViewModel() {
     private var _emailSentState = mutableStateOf<EmailSentState>(EmailSentState.Loading)
     val emailSentState: State<EmailSentState> = _emailSentState
 

@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.R
 import net.branium.data.model.dto.request.SignInRequest
@@ -65,7 +66,7 @@ fun SignInScreen(
     var passwordVisible by remember { mutableStateOf(false) }
     var showPwdEnabled by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val signInViewModel: SignInViewModel = viewModel()
+    val signInViewModel: SignInViewModel = hiltViewModel()
     LaunchedEffect(key1 = signInViewModel.apiResponseState.value) {
         when (val stateValue = signInViewModel.apiResponseState.value) {
             is ApiResponseState.Succeeded -> {
