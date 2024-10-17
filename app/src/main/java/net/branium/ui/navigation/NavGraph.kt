@@ -7,13 +7,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import net.branium.ui.screeen.HomeScreen
-import net.branium.ui.screeen.auth.CodeResetScreen
-import net.branium.ui.screeen.auth.ForgotPasswordScreen
-import net.branium.ui.screeen.auth.ResetPasswordScreen
-import net.branium.ui.screeen.auth.SignInScreen
-import net.branium.ui.screeen.auth.SignUpScreen
-import net.branium.ui.screeen.SplashScreen
+import net.branium.ui.screen.HomeScreen
+import net.branium.ui.screen.auth.CodeResetScreen
+import net.branium.ui.screen.auth.ForgotPasswordScreen
+import net.branium.ui.screen.auth.ResetPasswordScreen
+import net.branium.ui.screen.auth.SignInScreen
+import net.branium.ui.screen.auth.SignUpScreen
+import net.branium.ui.screen.SplashScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {

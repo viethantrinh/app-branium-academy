@@ -1,6 +1,5 @@
-package net.branium.ui.screeen.auth
+package net.branium.ui.screen.auth
 
-import android.media.Image
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,14 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,33 +45,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.R
-import net.branium.data.model.dto.request.SignUpRequest
+import net.branium.data.model.dto.request.SignInRequest
 import net.branium.ui.theme.textFieldColors
 import net.branium.viewmodel.ApiResponseState
-import net.branium.viewmodel.SignUpViewModel
+import net.branium.viewmodel.SignInViewModel
+
 
 @Composable
-fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
+fun SignInScreen(
+    onNavigateToForgotPasswordScreen: () -> Unit,
+    onNavigateToHomeScreen: () -> Unit,
+    onNavigateToSignUpScreen: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var confirmPassword by remember { mutableStateOf("") }
-    var confirmPasswordVisible by remember { mutableStateOf(false) }
     var showPwdEnabled by remember { mutableStateOf(false) }
-    var showConfirmPwdEnabled by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
-    val signUpViewModel: SignUpViewModel = hiltViewModel()
-
-    LaunchedEffect(key1 = signUpViewModel.apiResponseState.value) {
-        when (val stateValue = signUpViewModel.apiResponseState.value) {
+    val signInViewModel: SignInViewModel = hiltViewModel()
+    LaunchedEffect(key1 = signInViewModel.apiResponseState.value) {
+        when (val stateValue = signInViewModel.apiResponseState.value) {
             is ApiResponseState.Succeeded -> {
-                onNavigateToSignInScreen()
                 Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
+                onNavigateToHomeScreen()
             }
 
             is ApiResponseState.Failed -> {
@@ -88,7 +82,6 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
             else -> Unit
         }
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -103,30 +96,6 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(40.dp))
         OutlinedTextField(
-            value = firstName,
-            onValueChange = {
-                firstName = it
-            },
-            label = { Text(text = "First name", color = Color.DarkGray) },
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = textFieldColors()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = lastName,
-            onValueChange = {
-                lastName = it
-            },
-            label = { Text(text = "Last name", color = Color.DarkGray) },
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = textFieldColors()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
@@ -137,12 +106,13 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
                 .fillMaxWidth(),
             colors = textFieldColors()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         OutlinedTextField(
             value = password,
             onValueChange = {
                 showPwdEnabled = if (it.isNotBlank()) true else !showPwdEnabled
                 password = it
+                /* TODO: validate here */
             },
             label = { Text(text = "Password", color = Color.DarkGray) },
             singleLine = true,
@@ -167,69 +137,26 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = {
-                showConfirmPwdEnabled = if (it.isNotBlank()) true else !showConfirmPwdEnabled
-                confirmPassword = it
-
-            },
-            label = { Text(text = "Confirm password", color = Color.DarkGray) },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
-            ),
-            colors = textFieldColors(),
-            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val icon = if (confirmPasswordVisible)
-                    ImageVector.vectorResource(id = R.drawable.icon_visibility_off_24)
-                else
-                    ImageVector.vectorResource(id = R.drawable.icon_visibility_24)
-                IconButton(
-                    onClick = { confirmPasswordVisible = !confirmPasswordVisible },
-                    enabled = showConfirmPwdEnabled
-                ) {
-                    Icon(imageVector = icon, contentDescription = "confirm password visibility")
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
-            modifier = Modifier.align(Alignment.End),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Text(
-                text = "Already have an account?",
+        Spacer(modifier = Modifier.height(12.dp))
+        Text(
+            text = AnnotatedString(text = "Forgot password?"),
+            style = TextStyle(
                 fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                fontSize = 14.sp
-            )
-            Text(
-                text = "Login",
-                style = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(color = 0xFFF95E0A),
-                    fontSize = 14.sp
-                ),
-                modifier = Modifier.clickable(onClick = onNavigateToSignInScreen)
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+                color = Color(color = 0xFFF95E0A),
+                fontSize = 14.sp,
+            ),
+            modifier = Modifier
+                .align(Alignment.End)
+                .clickable(onClick = onNavigateToForgotPasswordScreen)
+        )
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                val signUpRequest = SignUpRequest(
-                    firstName = firstName,
-                    lastName = lastName,
+                val request = SignInRequest(
                     email = email,
                     password = password
                 )
-                signUpViewModel.signUp(request = signUpRequest)
+                signInViewModel.signIn(request, context)
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -239,14 +166,35 @@ fun SignUpScreen(onNavigateToSignInScreen: () -> Unit) {
             ),
             shape = RoundedCornerShape(size = 8.dp)
         ) {
-            Text(text = "Sign up")
+            Text(text = "Sign in")
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Text(
+                text = "Don’t have an account?",
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black,
+                fontSize = 14.sp
+            )
+            Text(
+                text = "Register now",
+                style = TextStyle(
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(color = 0xFFF95E0A),
+                    fontSize = 14.sp
+                ),
+                modifier = Modifier.clickable(onClick = onNavigateToSignUpScreen)
+            )
         }
     }
 }
 
-
 @Composable
 @Preview(showBackground = true)
-fun SignUpScreenPreview() {
-    SignUpScreen({})
+fun SignInScreenPreview() {
+
+    SignInScreen({}, {}, {})
 }

@@ -1,4 +1,4 @@
-package net.branium.ui.screeen
+package net.branium.ui.screen
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

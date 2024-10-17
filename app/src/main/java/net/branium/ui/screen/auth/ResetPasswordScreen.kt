@@ -1,12 +1,7 @@
-package net.branium.ui.screeen.auth
+package net.branium.ui.screen.auth
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,58 +15,45 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import net.branium.R
-import net.branium.data.model.dto.request.SignInRequest
 import net.branium.ui.theme.textFieldColors
 import net.branium.viewmodel.ApiResponseState
-import net.branium.viewmodel.SignInViewModel
-import net.branium.viewmodel.SignUpViewModel
-
+import net.branium.viewmodel.ResetPasswordViewModel
 
 @Composable
-fun SignInScreen(
-    onNavigateToForgotPasswordScreen: () -> Unit,
-    onNavigateToHomeScreen: () -> Unit,
-    onNavigateToSignUpScreen: () -> Unit
-) {
-    var email by remember { mutableStateOf("") }
+fun ResetPasswordScreen(code: String?, email: String?, onNavigateToSignInScreen: () -> Unit) {
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    var confirmPassword by remember { mutableStateOf("") }
+    var confirmPasswordVisible by remember { mutableStateOf(false) }
     var showPwdEnabled by remember { mutableStateOf(false) }
+    var showConfirmPwdEnabled by remember { mutableStateOf(false) }
+
     val context = LocalContext.current
-    val signInViewModel: SignInViewModel = hiltViewModel()
-    LaunchedEffect(key1 = signInViewModel.apiResponseState.value) {
-        when (val stateValue = signInViewModel.apiResponseState.value) {
+    val resetPasswordViewModel: ResetPasswordViewModel = hiltViewModel()
+
+    LaunchedEffect(key1 = resetPasswordViewModel.apiResponseState.value) {
+        when (val stateValue = resetPasswordViewModel.apiResponseState.value) {
             is ApiResponseState.Succeeded -> {
+                onNavigateToSignInScreen()
                 Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
-                onNavigateToHomeScreen()
             }
 
             is ApiResponseState.Failed -> {
@@ -85,31 +67,14 @@ fun SignInScreen(
             else -> Unit
         }
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = 24.dp, end = 24.dp, top = 118.dp)
-            .background(Color.White),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(start = 24.dp, end = 24.dp, top = 135.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.image_brand_logo),
-            contentDescription = "app's logo",
-            contentScale = ContentScale.Fit
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-        OutlinedTextField(
-            value = email,
-            onValueChange = {
-                email = it
-            },
-            label = { Text(text = "Email", color = Color.DarkGray) },
-            singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = textFieldColors()
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+        Text(text = "Enter your new password")
+        Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
             value = password,
             onValueChange = {
@@ -140,26 +105,44 @@ fun SignInScreen(
             modifier = Modifier
                 .fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = AnnotatedString(text = "Forgot password?"),
-            style = TextStyle(
-                fontWeight = FontWeight.SemiBold,
-                color = Color(color = 0xFFF95E0A),
-                fontSize = 14.sp,
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = {
+                showConfirmPwdEnabled = if (it.isNotBlank()) true else !showConfirmPwdEnabled
+                confirmPassword = it
+                /* TODO: validate here */
+
+            },
+            label = { Text(text = "Confirm password", color = Color.DarkGray) },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
             ),
+            colors = textFieldColors(),
+            visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val icon = if (confirmPasswordVisible)
+                    ImageVector.vectorResource(id = R.drawable.icon_visibility_off_24)
+                else
+                    ImageVector.vectorResource(id = R.drawable.icon_visibility_24)
+                IconButton(
+                    onClick = { confirmPasswordVisible = !confirmPasswordVisible },
+                    enabled = showConfirmPwdEnabled
+                ) {
+                    Icon(imageVector = icon, contentDescription = "confirm password visibility")
+                }
+            },
             modifier = Modifier
-                .align(Alignment.End)
-                .clickable(onClick = onNavigateToForgotPasswordScreen)
+                .fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                val request = SignInRequest(
-                    email = email,
-                    password = password
-                )
-                signInViewModel.signIn(request, context)
+                if (code != null && email != null) {
+                    resetPasswordViewModel.resetPassword(code, email, password)
+                }
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -169,35 +152,7 @@ fun SignInScreen(
             ),
             shape = RoundedCornerShape(size = 8.dp)
         ) {
-            Text(text = "Sign in")
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(3.dp)
-        ) {
-            Text(
-                text = "Don’t have an account?",
-                fontWeight = FontWeight.SemiBold,
-                color = Color.Black,
-                fontSize = 14.sp
-            )
-            Text(
-                text = "Register now",
-                style = TextStyle(
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(color = 0xFFF95E0A),
-                    fontSize = 14.sp
-                ),
-                modifier = Modifier.clickable(onClick = onNavigateToSignUpScreen)
-            )
+            Text(text = "Reset password")
         }
     }
-}
-
-@Composable
-@Preview(showBackground = true)
-fun SignInScreenPreview() {
-
-    SignInScreen({}, {}, {})
 }
