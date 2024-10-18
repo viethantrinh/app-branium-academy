@@ -1,9 +1,10 @@
-package net.branium.ui.screen
+package net.branium.ui.screen.account
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun HomeScreen() {
-    Text(text = "This is home screen")
+fun AccountScreen() {
+    Text(text = "Account Screen")
+
 }

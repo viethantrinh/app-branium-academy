@@ -55,7 +55,7 @@ import net.branium.viewmodel.SignInViewModel
 @Composable
 fun SignInScreen(
     onNavigateToForgotPasswordScreen: () -> Unit,
-    onNavigateToHomeScreen: () -> Unit,
+    onNavigateToMainScreen: () -> Unit,
     onNavigateToSignUpScreen: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
@@ -68,7 +68,7 @@ fun SignInScreen(
         when (val stateValue = signInViewModel.apiResponseState.value) {
             is ApiResponseState.Succeeded -> {
                 Toast.makeText(context, stateValue.message, Toast.LENGTH_SHORT).show()
-                onNavigateToHomeScreen()
+                onNavigateToMainScreen()
             }
 
             is ApiResponseState.Failed -> {

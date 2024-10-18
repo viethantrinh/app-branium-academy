@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +24,9 @@ class RetrofitHelper @Inject constructor(private val authInterceptor: AuthInterc
 
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)  // Set connection timeout
+            .readTimeout(30, TimeUnit.SECONDS)     // Set read timeout
+            .writeTimeout(30, TimeUnit.SECONDS)    // Set write timeout
             .build()
 
         val retrofitInstance = Retrofit.Builder()
@@ -45,6 +49,9 @@ class RetrofitHelper @Inject constructor(private val authInterceptor: AuthInterc
         val client = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS)  // Set connection timeout
+            .readTimeout(30, TimeUnit.SECONDS)     // Set read timeout
+            .writeTimeout(30, TimeUnit.SECONDS)    // Set write timeout
             .build()
 
         val retrofitInstance = Retrofit.Builder()

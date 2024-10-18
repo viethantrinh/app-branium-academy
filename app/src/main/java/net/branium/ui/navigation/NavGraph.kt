@@ -7,13 +7,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import net.branium.ui.screen.HomeScreen
 import net.branium.ui.screen.auth.CodeResetScreen
 import net.branium.ui.screen.auth.ForgotPasswordScreen
 import net.branium.ui.screen.auth.ResetPasswordScreen
 import net.branium.ui.screen.auth.SignInScreen
 import net.branium.ui.screen.auth.SignUpScreen
-import net.branium.ui.screen.SplashScreen
+import net.branium.ui.screen.auth.SplashScreen
+import net.branium.ui.screen.main.MainScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -25,7 +25,7 @@ fun NavGraph(navController: NavHostController) {
         addForgotPasswordScreen(navController, this)
         addCodeResetScreen(navController, this)
         addResetPasswordScreen(navController, this)
-        addHomeScreen(navController, this)
+        addMainScreen(this)
     }
 }
 
@@ -51,8 +51,8 @@ private fun addSignInScreen(navController: NavController, navGraphBuilder: NavGr
             onNavigateToSignUpScreen = {
                 navController.navigate(NavRoute.SignUpScreen.route)
             },
-            onNavigateToHomeScreen = {
-                navController.navigate(NavRoute.HomeScreen.route)
+            onNavigateToMainScreen = {
+                navController.navigate(NavRoute.MainScreen.route)
             }
         )
     }
@@ -137,13 +137,12 @@ private fun addResetPasswordScreen(
     }
 }
 
-private fun addHomeScreen(
-    navController: NavController,
+private fun addMainScreen(
     navGraphBuilder: NavGraphBuilder
 ) {
     navGraphBuilder.composable(
-        route = NavRoute.HomeScreen.route
+        route = NavRoute.MainScreen.route
     ) {
-        HomeScreen()
+        MainScreen()
     }
 }

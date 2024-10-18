@@ -1,4 +1,4 @@
-package net.branium.ui.screen
+package net.branium.ui.screen.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -42,7 +42,7 @@ fun SplashScreen(
         delay(100)
         when (splashScreenViewModel.authState.value) {
             is AuthState.Authenticated -> {
-                onNavigate(NavRoute.HomeScreen.route)
+                onNavigate(NavRoute.MainScreen.route)
             }
 
             is AuthState.UnAuthenticated -> {

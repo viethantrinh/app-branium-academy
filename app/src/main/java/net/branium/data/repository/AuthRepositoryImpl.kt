@@ -20,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class AuthRepositoryImpl
-@Inject constructor(@Named("RetrofitInstanceWithAuthInterceptor") private val retrofitInstance: Retrofit) : AuthRepository {
+@Inject constructor(@Named("RetrofitInstance") private val retrofitInstance: Retrofit) : AuthRepository {
 
     private val authApiService: AuthApiService by lazy {
         retrofitInstance.create(AuthApiService::class.java)

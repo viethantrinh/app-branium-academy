@@ -16,7 +16,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
-import net.branium.test.BottomNavigationBar
 import net.branium.ui.navigation.NavGraph
 import net.branium.ui.theme.AppbraniumacademycomposeTheme
 
