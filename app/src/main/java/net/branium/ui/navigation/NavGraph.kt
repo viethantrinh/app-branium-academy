@@ -146,6 +146,5 @@ private fun addHomeScreen(
     navGraphBuilder.composable(
         route = NavRoute.HomeScreen.route
     ) {
-        HomeScreen()
     }
 }
