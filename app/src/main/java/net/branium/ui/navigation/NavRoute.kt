@@ -26,6 +26,9 @@ sealed class NavRoute(val route: String) {
 
         object Account : BottomScreen("account_screen", "Account", R.drawable.icon_nav_account_24)
     }
+
+    object CartScreen: NavRoute("cart_screen")
+    object CheckoutScreen: NavRoute("checkout_screen")
 }
 
 val navRouteBottom = listOf(

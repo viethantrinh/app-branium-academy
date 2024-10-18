@@ -17,10 +17,20 @@ import androidx.compose.ui.layout.ModifierInfo
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import net.branium.ui.navigation.NavRoute
 import net.branium.ui.navigation.navRouteBottom
 
 @Composable
 fun BottomNavScreen(navController: NavController, currentRoute: String?) {
+    if (currentRoute != NavRoute.BottomScreen.Home.route
+        && currentRoute != NavRoute.BottomScreen.Search.route
+        && currentRoute != NavRoute.BottomScreen.Course.route
+        && currentRoute != NavRoute.BottomScreen.Wishlist.route
+        && currentRoute != NavRoute.BottomScreen.Account.route
+    ) {
+        return
+    }
+
     BottomNavigation(
         modifier = Modifier
             .fillMaxWidth()

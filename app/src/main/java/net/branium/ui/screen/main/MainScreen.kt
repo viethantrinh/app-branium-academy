@@ -17,6 +17,8 @@ import net.branium.ui.navigation.NavRoute
 import net.branium.ui.screen.account.AccountScreen
 import net.branium.ui.screen.course.CourseScreen
 import net.branium.ui.screen.home.HomeScreen
+import net.branium.ui.screen.payment.CartScreen
+import net.branium.ui.screen.payment.CheckoutScreen
 import net.branium.ui.screen.search.SearchScreen
 import net.branium.ui.screen.wishlist.WishlistScreen
 
@@ -28,7 +30,13 @@ fun MainScreen() {
 
     Scaffold(
         topBar = {
-            TopBarScreen(navController = navController, onNavigateToCart = {})
+            TopBarScreen(
+                navController = navController,
+                viewModel = null,
+                onNavigateToCartScreen = {
+                    navController.navigate(NavRoute.CartScreen.route)
+                }
+            )
         },
         bottomBar = {
             BottomNavScreen(navController = navController, currentRoute = currentRoute)
@@ -44,6 +52,8 @@ fun MainScreen() {
             addCourseScreen(navController, this)
             addWishlistScreen(navController, this)
             addAccountScreen(navController, this)
+            addCartScreen(navController, this)
+            addCheckout(navController, this)
         }
     }
 }
@@ -87,3 +97,24 @@ fun addAccountScreen(navController: NavController, navGraphBuilder: NavGraphBuil
         AccountScreen()
     }
 }
+
+fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+    navGraphBuilder.composable(
+        route = NavRoute.CartScreen.route
+    ) {
+        CartScreen(
+            onNavigateToCheckOutScreen = {
+                navController.navigate(NavRoute.CheckoutScreen.route)
+            }
+        )
+    }
+}
+
+fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+    navGraphBuilder.composable(
+        route = NavRoute.CheckoutScreen.route
+    ) {
+        CheckoutScreen()
+    }
+}
+
