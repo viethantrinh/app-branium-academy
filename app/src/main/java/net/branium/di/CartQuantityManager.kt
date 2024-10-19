@@ -5,31 +5,32 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import net.branium.util.Constants
 import javax.inject.Inject
 
-class TokenManager @Inject constructor(@ApplicationContext val context: Context) {
+class CartQuantityManager @Inject constructor(val context: Context) {
 
-    private val sharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+    private val sharedPreferences =
+        context.getSharedPreferences("cart_quantities", Context.MODE_PRIVATE)
 
     // Method to store the token
-    fun storeToken(token: String) {
+    fun storeCartQuantity(quantity: Int) {
         val editor = sharedPreferences.edit()
-        editor.putString(Constants.TOKEN, token)
+        editor.putInt(Constants.CART_QUANTITY, quantity)
         editor.apply()  // Saves the token asynchronously
     }
 
     // Method to retrieve the token
-    fun getToken(): String? {
-        return sharedPreferences.getString(Constants.TOKEN, null)
+    fun getCartQuantity(): Int {
+        return sharedPreferences.getInt(Constants.CART_QUANTITY, 0)
     }
 
     // Method to clear the token (e.g., on logout)
-    fun clearToken() {
+    fun resetCartQuantity() {
         val editor = sharedPreferences.edit()
-        editor.remove(Constants.TOKEN)
+        editor.remove(Constants.CART_QUANTITY)
         editor.apply()  // Removes the token asynchronously
     }
 
     // Method to check if a token is present
-    fun hasToken(): Boolean {
-        return sharedPreferences.contains(Constants.TOKEN)
+    fun hasCartQuantity(): Boolean {
+        return sharedPreferences.contains(Constants.CART_QUANTITY)
     }
 }

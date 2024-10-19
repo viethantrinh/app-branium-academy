@@ -1,4 +1,4 @@
-package net.branium.data.repository
+package net.branium.data.repository.impl
 
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
@@ -10,9 +10,9 @@ import net.branium.data.model.dto.request.SignUpRequest
 import net.branium.data.model.dto.response.ApiResponse
 import net.branium.data.model.dto.response.ErrorResponse
 import net.branium.data.model.dto.response.SignInResponse
-import net.branium.data.retrofit.AuthApiService
-import net.branium.data.retrofit.ResultResponse
-import net.branium.data.retrofit.RetrofitHelper
+import net.branium.data.repository.AuthRepository
+import net.branium.data.retrofit.service.AuthApiService
+import net.branium.data.model.dto.response.ResultResponse
 import net.branium.di.TokenManager
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -20,7 +20,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class AuthRepositoryImpl
-@Inject constructor(@Named("RetrofitInstance") private val retrofitInstance: Retrofit) : AuthRepository {
+@Inject constructor(@Named("RetrofitInstance") private val retrofitInstance: Retrofit) :
+    AuthRepository {
 
     private val authApiService: AuthApiService by lazy {
         retrofitInstance.create(AuthApiService::class.java)

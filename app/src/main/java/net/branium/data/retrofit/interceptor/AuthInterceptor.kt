@@ -1,4 +1,4 @@
-package net.branium.data.retrofit
+package net.branium.data.retrofit.interceptor
 
 import android.content.Context
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -15,7 +15,11 @@ class AuthInterceptor @Inject constructor(
         val headerName = "Authorization"
         val tokenManager = TokenManager(context)
         val token = tokenManager.getToken()
-        val headerValue = token ?: ""
+
+        val sb = StringBuilder("")
+        sb.append("Bearer").append(" ").append(token)
+
+        val headerValue = sb.toString()
         currentRequest.addHeader(headerName, headerValue)
         val newRequest = currentRequest.build();
         return chain.proceed(newRequest)
