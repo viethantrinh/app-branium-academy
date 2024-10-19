@@ -1,9 +1,7 @@
 package net.branium.data.retrofit
 
-import android.content.Context
-import dagger.hilt.android.qualifiers.ApplicationContext
+import net.branium.data.retrofit.interceptor.AuthInterceptor
 import net.branium.util.Constants
-import okhttp3.OkHttp
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit

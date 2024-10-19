@@ -1,4 +1,4 @@
-package net.branium.data.retrofit
+package net.branium.data.model.dto.response
 
 abstract class ResultResponse<T> {
     data class Success<T>(val data: T?) : ResultResponse<T>()

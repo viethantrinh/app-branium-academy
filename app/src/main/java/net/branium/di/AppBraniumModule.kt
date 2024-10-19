@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.branium.data.retrofit.AuthInterceptor
+import net.branium.data.retrofit.interceptor.AuthInterceptor
 import net.branium.data.retrofit.RetrofitHelper
 import retrofit2.Retrofit
 import javax.inject.Named
@@ -15,6 +15,23 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppBraniumModule {
+
+    @Provides
+    @Singleton
+    fun provideTokenManager(
+        context: Context
+    ): TokenManager {
+        return TokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartQuantityManager(
+        context: Context
+    ): CartQuantityManager {
+        return CartQuantityManager(context)
+    }
+
     @Provides
     @Singleton
     fun provideRetrofitHelper(

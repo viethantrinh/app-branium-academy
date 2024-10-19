@@ -5,8 +5,7 @@ import net.branium.data.model.dto.request.IntrospectRequest
 import net.branium.data.model.dto.request.ResetPasswordRequest
 import net.branium.data.model.dto.request.SignInRequest
 import net.branium.data.model.dto.request.SignUpRequest
-import net.branium.data.model.dto.response.SignInResponse
-import net.branium.data.retrofit.ResultResponse
+import net.branium.data.model.dto.response.ResultResponse
 
 interface AuthRepository {
     suspend fun signIn(request: SignInRequest, context: Context): ResultResponse<String>

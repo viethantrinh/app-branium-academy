@@ -1,4 +1,4 @@
-package net.branium.data.retrofit
+package net.branium.data.retrofit.service
 
 import net.branium.data.model.dto.request.IntrospectRequest
 import net.branium.data.model.dto.response.ApiResponse

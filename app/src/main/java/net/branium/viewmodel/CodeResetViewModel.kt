@@ -1,22 +1,14 @@
 package net.branium.viewmodel
 
 
-import android.provider.ContactsContract.CommonDataKinds.Email
-import android.util.Log
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.branium.data.repository.AuthRepository
-import net.branium.data.repository.AuthRepositoryImpl
-import net.branium.data.retrofit.ResultResponse
+import net.branium.data.repository.impl.AuthRepositoryImpl
+import net.branium.data.model.dto.response.ResultResponse
 import javax.inject.Inject
 
 @HiltViewModel

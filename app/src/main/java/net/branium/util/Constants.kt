@@ -8,5 +8,6 @@ object Constants {
     const val BASE_URL = HAN_BASE_URL
 
     const val TOKEN = "TOKEN"
+    const val CART_QUANTITY = "CART_QUANTITY"
 }
 
