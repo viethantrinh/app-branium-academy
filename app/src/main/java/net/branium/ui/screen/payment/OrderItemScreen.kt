@@ -36,42 +36,25 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import net.branium.util.formatToVND
 import net.branium.viewmodel.CartViewModel.CartItem
+import net.branium.viewmodel.PaymentViewModel
+import net.branium.viewmodel.PaymentViewModel.*
 
 @Composable
-fun CartItemScreen(
-    cartItem: CartItem,
-    checked: Boolean = false,
-    onCheckChanged: (Boolean) -> Unit,
-    onRemoveClicked: () -> Unit
+fun OrderItemScreen(
+    orderItem: OrderItem
 ) {
-    // State to show or hide the confirmation dialog
-    var showDialog by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Checkbox
-        Checkbox(
-            checked = checked,
-            onCheckedChange = { isChecked ->
-                onCheckChanged(isChecked)
-            },
-            colors = CheckboxDefaults.colors(
-                checkedColor = Color(0xFFEA4B0C)
-            ),
-            modifier = Modifier
-                .align(Alignment.Top)
-                .padding(top = 7.dp)
-        )
-
         // Image (Java logo or any other image)
         Image(
-            painter = rememberAsyncImagePainter(model = cartItem.image),
+            painter = rememberAsyncImagePainter(model = orderItem.image),
             contentDescription = "Course Image",
             modifier = Modifier
-                .padding(end = 8.dp, top = 2.dp)
-                .size(52.dp)
+                .padding(end = 20.dp, top = 2.dp)
+                .size(60.dp)
                 .align(Alignment.Top),
             contentScale = ContentScale.FillBounds,
         )
@@ -83,7 +66,7 @@ fun CartItemScreen(
                 .padding(end = 8.dp),
         ) {
             Text(
-                text = cartItem.title,
+                text = orderItem.title,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
                 maxLines = 1,
@@ -104,84 +87,28 @@ fun CartItemScreen(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
-                    text = formatToVND(cartItem.discountPrice.toDouble()),
+                    text = formatToVND(orderItem.discountPrice.toDouble()),
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 13.sp
                 )
 
                 Text(
-                    text = formatToVND(cartItem.price.toDouble()),
+                    text = formatToVND(orderItem.price.toDouble()),
                     fontWeight = FontWeight.Medium,
                     fontSize = 11.sp,
                     textDecoration = TextDecoration.LineThrough
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = { showDialog = true },
-                modifier = Modifier
-                    .height(26.dp)
-                    .align(Alignment.End),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFF95E0A), // Use the same orange color
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(20), // Rounded corners
-                contentPadding = PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 4.dp
-                ) // Adjust padding to make it more compact
-            ) {
-                Text(
-                    text = "Remove from cart",
-                    fontSize = 12.sp // Smaller font size for compact appearance
-                )
-            }
         }
     }
-
-    if (showDialog) {
-        AlertDialog(
-            containerColor = Color.White,
-            onDismissRequest = { showDialog = false },
-            title = { Text(text = "Remove Item") },
-            text = { Text("Are you sure you want to remove this item from the cart?") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        onRemoveClicked()  // Call remove action
-                        showDialog = false  // Hide dialog after confirmation
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFF95E0A),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Yes", fontWeight = FontWeight.SemiBold)
-                }
-            },
-            dismissButton = {
-                Button(
-                    onClick = { showDialog = false },  // Just hide dialog if "No" clicked
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFF95E0A),
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("No", fontWeight = FontWeight.SemiBold)
-                }
-            }
-        )
-    }
-
     Spacer(modifier = Modifier.height(10.dp))
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun CartItemScreenPreview() {
-    val cartItem1 = CartItem(
+fun OrderItemScreenPreview() {
+    val orderItem1 = OrderItem(
         id = 11,
         title = "Java programming for beginner",
         image = "https//ngu.com",
@@ -189,6 +116,6 @@ fun CartItemScreenPreview() {
         discountPrice = 987_000
     )
 
-    CartItemScreen(cartItem = cartItem1, checked = true, onCheckChanged = {}, onRemoveClicked = {});
+    OrderItemScreen(orderItem = orderItem1);
 
 }

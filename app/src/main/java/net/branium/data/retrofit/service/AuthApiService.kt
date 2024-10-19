@@ -1,12 +1,12 @@
 package net.branium.data.retrofit.service
 
-import net.branium.data.model.dto.request.IntrospectRequest
-import net.branium.data.model.dto.response.ApiResponse
-import net.branium.data.model.dto.request.ResetPasswordRequest
-import net.branium.data.model.dto.request.SignInRequest
-import net.branium.data.model.dto.request.SignUpRequest
-import net.branium.data.model.dto.response.IntrospectResponse
-import net.branium.data.model.dto.response.SignInResponse
+import net.branium.data.model.dto.request.auth.IntrospectRequest
+import net.branium.data.model.dto.request.auth.ResetPasswordRequest
+import net.branium.data.model.dto.request.auth.SignInRequest
+import net.branium.data.model.dto.request.auth.SignUpRequest
+import net.branium.data.model.dto.response.base.ApiResponse
+import net.branium.data.model.dto.response.auth.IntrospectResponse
+import net.branium.data.model.dto.response.auth.SignInResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

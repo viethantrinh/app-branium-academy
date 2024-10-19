@@ -1,9 +1,8 @@
 package net.branium.data.retrofit.service
 
-import net.branium.data.model.dto.response.ApiResponse
-import net.branium.data.model.dto.response.CourseResponse
+import net.branium.data.model.dto.response.base.ApiResponse
+import net.branium.data.model.dto.response.course.CourseResponse
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST

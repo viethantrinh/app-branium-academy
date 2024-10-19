@@ -1,6 +1,5 @@
 package net.branium.ui.navigation
 
-import android.graphics.drawable.Icon
 import androidx.annotation.DrawableRes
 import net.branium.R
 

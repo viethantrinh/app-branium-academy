@@ -4,10 +4,9 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import net.branium.data.retrofit.interceptor.AuthInterceptor
 import net.branium.data.retrofit.RetrofitHelper
+import net.branium.data.retrofit.interceptor.AuthInterceptor
 import retrofit2.Retrofit
 import javax.inject.Named
 import javax.inject.Singleton

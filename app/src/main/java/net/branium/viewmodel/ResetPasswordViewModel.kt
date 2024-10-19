@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import net.branium.data.model.dto.request.ResetPasswordRequest
+import net.branium.data.model.dto.request.auth.ResetPasswordRequest
+import net.branium.data.model.dto.response.base.ResultResponse
 import net.branium.data.repository.impl.AuthRepositoryImpl
-import net.branium.data.model.dto.response.ResultResponse
 import javax.inject.Inject
 
 @HiltViewModel
