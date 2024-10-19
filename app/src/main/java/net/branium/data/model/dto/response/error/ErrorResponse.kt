@@ -1,4 +1,4 @@
-package net.branium.data.model.dto.response
+package net.branium.data.model.dto.response.error
 
 data class ErrorResponse(
     val code: Int,

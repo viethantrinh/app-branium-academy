@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.branium.R
-import net.branium.data.model.dto.request.SignUpRequest
+import net.branium.data.model.dto.request.auth.SignUpRequest
 import net.branium.ui.theme.textFieldColors
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.SignUpViewModel

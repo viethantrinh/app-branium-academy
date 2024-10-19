@@ -1,7 +1,7 @@
 package net.branium.data.repository
 
-import net.branium.data.model.dto.response.CourseResponse
-import net.branium.data.model.dto.response.ResultResponse
+import net.branium.data.model.dto.response.course.CourseResponse
+import net.branium.data.model.dto.response.base.ResultResponse
 
 interface WishlistRepository {
     suspend fun listWishlistItems(): ResultResponse<List<CourseResponse>>

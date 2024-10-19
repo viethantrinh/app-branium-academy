@@ -2,10 +2,10 @@ package net.branium.data.repository.impl
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import net.branium.data.model.dto.response.ApiResponse
-import net.branium.data.model.dto.response.CourseResponse
-import net.branium.data.model.dto.response.ErrorResponse
-import net.branium.data.model.dto.response.ResultResponse
+import net.branium.data.model.dto.response.base.ApiResponse
+import net.branium.data.model.dto.response.course.CourseResponse
+import net.branium.data.model.dto.response.error.ErrorResponse
+import net.branium.data.model.dto.response.base.ResultResponse
 import net.branium.data.repository.CartRepository
 import net.branium.data.retrofit.service.CartApiService
 import retrofit2.Response

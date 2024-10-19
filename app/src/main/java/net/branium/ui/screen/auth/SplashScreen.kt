@@ -14,9 +14,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.coroutines.delay
 import net.branium.R
-import net.branium.data.model.dto.request.IntrospectRequest
-import net.branium.ui.navigation.NavRoute
+import net.branium.data.model.dto.request.auth.IntrospectRequest
 import net.branium.di.TokenManager
+import net.branium.ui.navigation.NavRoute
 import net.branium.viewmodel.SplashScreenViewModel
 import net.branium.viewmodel.SplashScreenViewModel.AuthState
 
