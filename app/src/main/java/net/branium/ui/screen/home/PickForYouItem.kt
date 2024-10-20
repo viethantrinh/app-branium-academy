@@ -23,12 +23,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import net.branium.R
 import net.branium.data.model.dto.response.home.TopPick
+import kotlin.math.truncate
 
 @Composable
 fun PickForYouItem(topPick: TopPick) {
@@ -38,8 +40,8 @@ fun PickForYouItem(topPick: TopPick) {
             .width(172.dp),
     ) {
         Box(modifier = Modifier
-            .height(72.dp)
-            .width(170.dp)
+            .height(80.dp)
+            .width(172.dp)
             .border(
                 width = 0.5.dp,
                 color = colorResource(id = R.color.hint_color),
@@ -64,7 +66,9 @@ fun PickForYouItem(topPick: TopPick) {
                 Text(
                     text = topPick.title,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = "Trinh Viet Han",
@@ -122,5 +126,5 @@ fun PickForYouItem(topPick: TopPick) {
 @Preview(showBackground = true)
 @Composable
 fun PickForYouItemPreview() {
-    PickForYouItem(topPick = TopPick(1, "Java core", "", 11.0, 10.0))
+    PickForYouItem(topPick = TopPick(1, "Java  core siêu vip pro mua 1 tặng 1 khóa c++", "", 11.0, 10.0))
 }

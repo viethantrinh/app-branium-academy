@@ -10,9 +10,10 @@
 
     <color name="primary">#F95E0A</color>
     <color name="hint_color">#A0A0A0</color>
-    <color name="color_background_top_pick">#ECE7E7</color>
+    <color name="color_author">#696C70</color>
     <color name="color_popular_1">#9DE9F6</color>
     <color name="color_popular_2">#DC9984</color>
     <color name="color_popular_3">#EC87A8</color>
     <color name="yellow">#ECB018</color>
+    <color name="color_wishlist_favorite">#F95E0A</color>
 </resources>

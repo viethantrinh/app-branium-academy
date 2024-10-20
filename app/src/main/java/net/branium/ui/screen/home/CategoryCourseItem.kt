@@ -2,9 +2,11 @@ package net.branium.ui.screeen.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
@@ -26,18 +28,24 @@ fun CategoryCourseItem(category: Category, navigationToCourses: (Category) -> Un
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
+        Box(
             modifier = Modifier
-                .size(80.dp)
-                .clip(CircleShape)
                 .border(
                     width = 1.dp,
                     color = colorResource(id = R.color.hint_color),
                     shape = CircleShape
-                ),
-            painter = rememberAsyncImagePainter(category.image),
-            contentDescription = "circle category image"
-        )
+                )
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(70.dp)
+                    .padding(8.dp)
+                    .clip(CircleShape),
+                painter = rememberAsyncImagePainter(category.image),
+                contentDescription = "circle category image"
+            )
+        }
+
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = category.title,

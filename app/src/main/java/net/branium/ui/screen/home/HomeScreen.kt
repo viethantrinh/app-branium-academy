@@ -71,6 +71,7 @@ fun PopularCourse(courses: List<PopularCourse>) {
         colorResource(id = R.color.color_popular_1),
         colorResource(id = R.color.color_popular_2)
     )
+    Spacer(modifier = Modifier.height(16.dp))
     Text(
         modifier = Modifier.padding(start = 14.dp),
         text = "Popular Courses",
@@ -78,7 +79,7 @@ fun PopularCourse(courses: List<PopularCourse>) {
         color = colorResource(id = R.color.primary),
         fontWeight = FontWeight.Bold
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     LazyRow {
         items(courses) { course ->
             val index = courses.indexOf(course) % colors.size
@@ -86,11 +87,12 @@ fun PopularCourse(courses: List<PopularCourse>) {
             PopularCourseItem(course = course, color)
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
+
 }
 
 @Composable
 fun CategorySources(categories: List<Category>) {
+    Spacer(modifier = Modifier.height(16.dp))
     Text(
         modifier = Modifier.padding(start = 14.dp),
         text = "Category",
@@ -98,25 +100,25 @@ fun CategorySources(categories: List<Category>) {
         color = colorResource(id = R.color.primary),
         fontWeight = FontWeight.Bold
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(12.dp))
     LazyHorizontalGrid(
         modifier = Modifier
             .padding(start = 14.dp)
             .height(250.dp),
         rows = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         items(categories) { category ->
             CategoryCourseItem(category = category, {})
         }
     }
-    Spacer(modifier = Modifier.height(8.dp))
+
 
 }
 
 @Composable
 fun TopPicks(topPicks: List<TopPick>) {
+    Spacer(modifier = Modifier.height(8.dp))
     Text(
         modifier = Modifier.padding(start = 14.dp),
         text = "Pick For You",
@@ -124,10 +126,10 @@ fun TopPicks(topPicks: List<TopPick>) {
         color = colorResource(id = R.color.primary),
         fontWeight = FontWeight.Bold
     )
-    Spacer(modifier = Modifier.height(4.dp))
+    Spacer(modifier = Modifier.height(8.dp))
     LazyRow(
         modifier = Modifier.padding(start = 14.dp).fillMaxHeight(),
-        horizontalArrangement = Arrangement.spacedBy(14.dp)
+        horizontalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         items(topPicks) { topPick ->
             PickForYouItem(topPick)
