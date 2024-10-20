@@ -15,12 +15,9 @@ class AuthInterceptor @Inject constructor(
         val headerName = "Authorization"
         val tokenManager = TokenManager(context)
         val token = tokenManager.getToken()
-
         val sb = StringBuilder("")
-        sb.append("Bearer").append(" ").append(token)
-
-        val headerValue = sb.toString()
-        currentRequest.addHeader(headerName, headerValue)
+        val headerValue = sb.append("Bearer").append(" ").append(token)
+        currentRequest.addHeader(headerName, headerValue.toString())
         val newRequest = currentRequest.build();
         return chain.proceed(newRequest)
     }

@@ -132,4 +132,3 @@ fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder) 
         }
     }
 }
-
