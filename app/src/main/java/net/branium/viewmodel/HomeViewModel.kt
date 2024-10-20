@@ -6,11 +6,11 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import net.branium.data.model.dto.home.Category
-import net.branium.data.model.dto.home.PopularCourse
-import net.branium.data.model.dto.home.TopPick
-import net.branium.data.repository.HomeRepositoryImp
-import net.branium.data.retrofit.ResultResponse
+import net.branium.data.model.dto.response.home.Category
+import net.branium.data.model.dto.response.home.PopularCourse
+import net.branium.data.model.dto.response.home.TopPick
+import net.branium.data.model.dto.response.base.ResultResponse
+import net.branium.data.repository.impl.HomeRepositoryImp
 import javax.inject.Inject
 
 @HiltViewModel

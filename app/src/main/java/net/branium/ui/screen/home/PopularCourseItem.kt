@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.branium.R
-import net.branium.data.model.dto.home.PopularCourse
+import net.branium.data.model.dto.response.home.PopularCourse
 
 //source: Source, navigationToDetail: (Source) -> Unit
 @Composable

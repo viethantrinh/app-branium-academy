@@ -2,17 +2,16 @@ package net.branium.ui.screen.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.ui.navigation.NavRoute
 import net.branium.ui.screen.account.AccountScreen
 import net.branium.ui.screen.course.CourseScreen
@@ -21,6 +20,8 @@ import net.branium.ui.screen.payment.CartScreen
 import net.branium.ui.screen.payment.CheckoutScreen
 import net.branium.ui.screen.search.SearchScreen
 import net.branium.ui.screen.wishlist.WishlistScreen
+import net.branium.viewmodel.CartViewModel
+import net.branium.viewmodel.CartViewModel.*
 
 @Composable
 fun MainScreen() {
@@ -103,7 +104,11 @@ fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
         route = NavRoute.CartScreen.route
     ) {
         CartScreen(
-            onNavigateToCheckOutScreen = {
+            onNavigateToCheckOutScreen = { orderResponse ->
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    "orderResponse",
+                    orderResponse
+                )
                 navController.navigate(NavRoute.CheckoutScreen.route)
             }
         )
@@ -114,6 +119,16 @@ fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder) 
     navGraphBuilder.composable(
         route = NavRoute.CheckoutScreen.route
     ) {
-        CheckoutScreen()
+        val orderResponse =
+            navController.previousBackStackEntry?.savedStateHandle?.get<OrderResponse>("orderResponse")
+        if (orderResponse != null) {
+            CheckoutScreen(
+                orderResponse = orderResponse,
+                onNavigateToCourseScreen = {
+                    // Navigate back to the home screen
+                    navController.navigate(NavRoute.BottomScreen.Course.bRoute)
+                }
+            )
+        }
     }
 }

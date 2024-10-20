@@ -24,9 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.branium.R
-import net.branium.data.model.dto.home.Category
-import net.branium.data.model.dto.home.PopularCourse
-import net.branium.data.model.dto.home.TopPick
+import net.branium.data.model.dto.response.home.Category
+import net.branium.data.model.dto.response.home.PopularCourse
+import net.branium.data.model.dto.response.home.TopPick
 import net.branium.ui.screeen.home.CategoryCourseItem
 import net.branium.ui.screeen.home.PopularCourseItem
 import net.branium.viewmodel.ApiResponseState

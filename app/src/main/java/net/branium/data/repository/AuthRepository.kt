@@ -1,12 +1,11 @@
 package net.branium.data.repository
 
 import android.content.Context
-import net.branium.data.model.dto.request.IntrospectRequest
-import net.branium.data.model.dto.request.ResetPasswordRequest
-import net.branium.data.model.dto.request.SignInRequest
-import net.branium.data.model.dto.request.SignUpRequest
-import net.branium.data.model.dto.response.SignInResponse
-import net.branium.data.retrofit.ResultResponse
+import net.branium.data.model.dto.request.auth.IntrospectRequest
+import net.branium.data.model.dto.request.auth.ResetPasswordRequest
+import net.branium.data.model.dto.request.auth.SignInRequest
+import net.branium.data.model.dto.request.auth.SignUpRequest
+import net.branium.data.model.dto.response.base.ResultResponse
 
 interface AuthRepository {
     suspend fun signIn(request: SignInRequest, context: Context): ResultResponse<String>

@@ -5,10 +5,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import net.branium.util.Constants
 import javax.inject.Inject
 
-class TokenManager (val context: Context) {
+class TokenManager @Inject constructor(@ApplicationContext val context: Context) {
 
-    private val sharedPreferences
-    = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
 
     // Method to store the token
     fun storeToken(token: String) {

@@ -1,17 +1,15 @@
 package net.branium.viewmodel
 
 
-import android.content.Context
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import net.branium.data.model.dto.request.IntrospectRequest
-import net.branium.data.model.dto.request.SignInRequest
-import net.branium.data.repository.AuthRepositoryImpl
-import net.branium.data.retrofit.ResultResponse
+import net.branium.data.model.dto.request.auth.IntrospectRequest
+import net.branium.data.model.dto.response.base.ResultResponse
+import net.branium.data.repository.impl.AuthRepositoryImpl
 import javax.inject.Inject
 
 @HiltViewModel
