@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,10 +23,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,32 +31,30 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.stripe.android.PaymentConfiguration
+import com.stripe.android.payments.paymentlauncher.PaymentResult
 import com.stripe.android.paymentsheet.PaymentSheet
 import com.stripe.android.paymentsheet.PaymentSheetResult
 import com.stripe.android.paymentsheet.rememberPaymentSheet
 import net.branium.R
+import net.branium.data.model.dto.request.payment.OrderStatusUpdateRequest
 import net.branium.data.model.dto.request.payment.PaymentRequest
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.util.formatToVND
 import net.branium.viewmodel.ApiResponseState
-import net.branium.viewmodel.CartViewModel
-import net.branium.viewmodel.CartViewModel.CartItem
 import net.branium.viewmodel.PaymentViewModel
 import net.branium.viewmodel.PaymentViewModel.*
 
 @Composable
 fun CheckoutScreen(orderResponse: OrderResponse, onNavigateToCourseScreen: () -> Unit) {
     val context = LocalContext.current
-    val paymentSheet = rememberPaymentSheet {
-        onPaymentSheetResult(it, onNavigateToCourseScreen)
-    }
     val paymentViewModel: PaymentViewModel = hiltViewModel()
+    val paymentSheet = rememberPaymentSheet {
+        onPaymentSheetResult(it, onNavigateToCourseScreen, paymentViewModel, orderResponse)
+    }
 
     LaunchedEffect(key1 = paymentViewModel.paymentResponse.value) {
         when (paymentViewModel.apiResponseState.value) {
@@ -88,7 +81,7 @@ fun CheckoutScreen(orderResponse: OrderResponse, onNavigateToCourseScreen: () ->
             else -> Unit
         }
     }
-    // Use Box to layer the LazyColumn and the Button
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -131,7 +124,7 @@ fun CheckoutScreen(orderResponse: OrderResponse, onNavigateToCourseScreen: () ->
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)  // Aligns the button at the bottom center of the screen
+                .align(Alignment.BottomCenter)
                 .padding(16.dp)
         ) {
             Row(
@@ -189,7 +182,7 @@ fun CheckoutScreen(orderResponse: OrderResponse, onNavigateToCourseScreen: () ->
                     modifier = Modifier.padding(start = 10.dp, end = 10.dp)
                 )
                 Image(
-                    painter = painterResource(id = R.drawable.image_stripe_logo), // Change this with your actual PayPal logo resource
+                    painter = painterResource(id = R.drawable.image_stripe_logo),
                     contentDescription = "PayPal Logo",
                     modifier = Modifier
                         .padding(end = 10.dp)
@@ -229,20 +222,29 @@ private fun presentPaymentSheet(
 
 private fun onPaymentSheetResult(
     paymentSheetResult: PaymentSheetResult,
-    onNavigateToCourseScreen: () -> Unit
+    onNavigateToCourseScreen: () -> Unit,
+    paymentViewModel: PaymentViewModel,
+    orderResponse: OrderResponse
 ) {
     when (paymentSheetResult) {
         is PaymentSheetResult.Canceled -> {
             print("Canceled")
+            val request = OrderStatusUpdateRequest(status = "canceled")
+            paymentViewModel.updateOrderStatus(request, orderResponse.orderId)
+            onNavigateToCourseScreen()
         }
 
         is PaymentSheetResult.Failed -> {
             print("Error: ${paymentSheetResult.error}")
+            val request = OrderStatusUpdateRequest(status = "failed")
+            paymentViewModel.updateOrderStatus(request, orderResponse.orderId)
+            onNavigateToCourseScreen()
         }
 
         is PaymentSheetResult.Completed -> {
-            // Display for example, an order confirmation screen
-            print("Completed")
+            print("Succeeded")
+            val request = OrderStatusUpdateRequest(status = "succeeded")
+            paymentViewModel.updateOrderStatus(request, orderResponse.orderId)
             onNavigateToCourseScreen()
         }
     }

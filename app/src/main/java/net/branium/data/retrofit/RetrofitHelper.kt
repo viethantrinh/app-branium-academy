@@ -17,14 +17,11 @@ class RetrofitHelper @Inject constructor(private val authInterceptor: AuthInterc
      */
      fun getRetrofitInstance(): Retrofit {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
+            level = HttpLoggingInterceptor.Level.BODY
         }
 
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)  // Set connection timeout
-            .readTimeout(30, TimeUnit.SECONDS)     // Set read timeout
-            .writeTimeout(30, TimeUnit.SECONDS)    // Set write timeout
             .build()
 
         val retrofitInstance = Retrofit.Builder()
@@ -41,15 +38,12 @@ class RetrofitHelper @Inject constructor(private val authInterceptor: AuthInterc
      */
     fun getRetrofitInstanceWithAuthInterceptor(): Retrofit {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
+            level = HttpLoggingInterceptor.Level.BODY
         }
 
         val client = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)  // Set connection timeout
-            .readTimeout(30, TimeUnit.SECONDS)     // Set read timeout
-            .writeTimeout(30, TimeUnit.SECONDS)    // Set write timeout
             .build()
 
         val retrofitInstance = Retrofit.Builder()

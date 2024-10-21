@@ -86,7 +86,7 @@ fun PickForYouItem(topPick: TopPick) {
                                 .height(16.dp)
                                 .width(16.dp)
                                 .padding(1.dp),
-                            painter = painterResource(id = R.drawable.star_rate_24),
+                            painter = painterResource(id = R.drawable.icon_star_rate_24),
                             contentDescription = "star rate",
                             colorFilter = ColorFilter.tint(colorResource(id = R.color.yellow))
                         )

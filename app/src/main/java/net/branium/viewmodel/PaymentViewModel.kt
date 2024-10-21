@@ -12,6 +12,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import net.branium.data.model.dto.request.payment.OrderItemRequest
+import net.branium.data.model.dto.request.payment.OrderStatusUpdateRequest
 import net.branium.data.model.dto.request.payment.PaymentRequest
 import net.branium.data.model.dto.response.base.ResultResponse
 import net.branium.data.model.dto.response.payment.PaymentResponse
@@ -55,6 +56,20 @@ class PaymentViewModel @Inject constructor(
                 is ResultResponse.Error -> {
                     _apiResponseState.value = ApiResponseState.Failed
                     _apiResponseState.value?.message = resultResponse.exception.message.toString()
+                }
+            }
+        }
+    }
+
+    fun updateOrderStatus(request: OrderStatusUpdateRequest, orderId: Int) {
+        viewModelScope.launch {
+            when (val resultResponse = paymentRepositoryImpl.updateOrderStatus(request, orderId)) {
+                is ResultResponse.Success -> {
+
+                }
+
+                is ResultResponse.Error -> {
+
                 }
             }
         }

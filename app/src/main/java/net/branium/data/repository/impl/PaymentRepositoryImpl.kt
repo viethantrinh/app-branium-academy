@@ -1,13 +1,14 @@
 package net.branium.data.repository.impl
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import net.branium.data.model.dto.request.payment.OrderItemRequest
+import net.branium.data.model.dto.request.payment.OrderStatusUpdateRequest
 import net.branium.data.model.dto.request.payment.PaymentRequest
 import net.branium.data.model.dto.response.base.ApiResponse
 import net.branium.data.model.dto.response.error.ErrorResponse
 import net.branium.data.model.dto.response.base.ResultResponse
+import net.branium.data.model.dto.response.payment.OrderDetailResponse
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.data.model.dto.response.payment.PaymentResponse
 import net.branium.data.repository.PaymentRepository
@@ -59,8 +60,27 @@ constructor(@Named("RetrofitInstanceWithAuthInterceptor") private val retrofitIn
         }
     }
 
+    override suspend fun updateOrderStatus(
+        request: OrderStatusUpdateRequest,
+        orderId: Int
+    ): ResultResponse<OrderDetailResponse> {
+        return withContext(Dispatchers.IO) {
+            val response = paymentApiService.updateOrderStatusAfterPayment(request, orderId)
+            if (response.isSuccessful) {
+                val responseBody = response.body()!!
+                ResultResponse.Success(responseBody.result)
+            } else {
+                val responseBody = parseUpdateOrderErrorResponse(response)
+                if (responseBody != null) {
+                    ResultResponse.Error(Exception(responseBody.message))
+                } else {
+                    ResultResponse.Error(Exception("order status update request failed!"))
+                }
+            }
+        }
+    }
 
-    // Function to parse the error body to ErrorResponse object
+
     private fun parseCheckoutErrorResponse(response: Response<ApiResponse<OrderResponse>>): ErrorResponse? {
         val converter = retrofitInstanceWithAuthInterceptor
             .responseBodyConverter<ErrorResponse>(ErrorResponse::class.java, arrayOfNulls(0))
@@ -74,8 +94,20 @@ constructor(@Named("RetrofitInstanceWithAuthInterceptor") private val retrofitIn
         }
     }
 
-    // Function to parse the error body to ErrorResponse object
     private fun parsePayErrorResponse(response: Response<ApiResponse<PaymentResponse>>): ErrorResponse? {
+        val converter = retrofitInstanceWithAuthInterceptor
+            .responseBodyConverter<ErrorResponse>(ErrorResponse::class.java, arrayOfNulls(0))
+        return try {
+            response.errorBody()?.let {
+                converter.convert(it) // Convert the error body to ErrorResponse
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun parseUpdateOrderErrorResponse(response: Response<ApiResponse<OrderDetailResponse>>): ErrorResponse? {
         val converter = retrofitInstanceWithAuthInterceptor
             .responseBodyConverter<ErrorResponse>(ErrorResponse::class.java, arrayOfNulls(0))
         return try {
