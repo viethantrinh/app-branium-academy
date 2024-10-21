@@ -83,7 +83,7 @@ fun PopularCourseItem(course: PopularCourse, color: Color) {
                 ) {
 
                     Text(
-                        text = course.discountPrice.toString(),
+                        text = "Learn more",
                         color = color,
                         fontSize = 12.sp
                     )
