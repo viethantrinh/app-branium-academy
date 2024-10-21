@@ -4,6 +4,7 @@ import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import net.branium.data.retrofit.RetrofitHelper
 import net.branium.data.retrofit.interceptor.AuthInterceptor
@@ -18,7 +19,7 @@ object AppBraniumModule {
     @Provides
     @Singleton
     fun provideTokenManager(
-        context: Context
+        @ApplicationContext context: Context
     ): TokenManager {
         return TokenManager(context)
     }
@@ -26,7 +27,7 @@ object AppBraniumModule {
     @Provides
     @Singleton
     fun provideCartQuantityManager(
-        context: Context
+        @ApplicationContext context: Context
     ): CartQuantityManager {
         return CartQuantityManager(context)
     }

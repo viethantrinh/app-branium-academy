@@ -1,5 +1,6 @@
 package net.branium.ui.screen.main
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,25 +18,34 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import net.branium.R
+import net.branium.di.CartQuantityManager
 import net.branium.ui.navigation.NavRoute
+import net.branium.viewmodel.HomeViewModel
 
 @Composable
 fun TopBarScreen(
     navController: NavController,
-    viewModel: ViewModel?, // cái này để cập nhật trạng thái số lượng giỏ hàng
+    homeViewModel: HomeViewModel,
     onNavigateToCartScreen: () -> Unit
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -53,7 +63,8 @@ fun TopBarScreen(
                     )
                 },
                 showCartQuantityScreen = true,
-                onNavigateToCartScreen = onNavigateToCartScreen
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
             )
         }
 
@@ -63,7 +74,8 @@ fun TopBarScreen(
                     /* TODO: Search Screen sẽ có top bar là một thanh tìm kiếm */
                 },
                 showCartQuantityScreen = true,
-                onNavigateToCartScreen = onNavigateToCartScreen
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
             )
         }
 
@@ -79,7 +91,8 @@ fun TopBarScreen(
                     )
                 },
                 showCartQuantityScreen = true,
-                onNavigateToCartScreen = onNavigateToCartScreen
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
             )
         }
 
@@ -95,7 +108,8 @@ fun TopBarScreen(
                     )
                 },
                 showCartQuantityScreen = true,
-                onNavigateToCartScreen = onNavigateToCartScreen
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
             )
         }
 
@@ -112,7 +126,7 @@ fun TopBarScreen(
                     ) {
                         IconButton(
                             onClick = {
-                                navController.navigateUp()
+                                navController.navigate(NavRoute.BottomScreen.Home.bRoute)
                             }
                         ) {
                             Icon(
@@ -130,7 +144,8 @@ fun TopBarScreen(
                     }
                 },
                 showCartQuantityScreen = false,
-                onNavigateToCartScreen = onNavigateToCartScreen
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
             )
         }
 
@@ -161,7 +176,8 @@ fun TopBarScreen(
                     }
                 },
                 showCartQuantityScreen = false,
-                onNavigateToCartScreen = onNavigateToCartScreen
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
             )
         }
     }
@@ -172,6 +188,7 @@ fun TopBarScreen(
 fun TopBar(
     title: @Composable () -> Unit,
     showCartQuantityScreen: Boolean = true,
+    homeViewModel: HomeViewModel,
     onNavigateToCartScreen: () -> Unit = {}
 ) {
     TopAppBar(
@@ -181,7 +198,7 @@ fun TopBar(
         },
         actions = {
             if (showCartQuantityScreen) {
-                CartQuantityScreen(onNavigateToCartScreen = onNavigateToCartScreen)
+                CartQuantityScreen(onNavigateToCartScreen = onNavigateToCartScreen, homeViewModel = homeViewModel)
             }
         },
         backgroundColor = Color.White,
@@ -191,7 +208,11 @@ fun TopBar(
 }
 
 @Composable
-fun CartQuantityScreen(onNavigateToCartScreen: () -> Unit) {
+fun CartQuantityScreen(
+    homeViewModel: HomeViewModel,
+    onNavigateToCartScreen: () -> Unit
+) {
+    val cartQuantity by remember { homeViewModel.cartQuantity }
     Box(modifier = Modifier.padding(end = 16.dp)) {
         IconButton(onClick = {
             onNavigateToCartScreen()
@@ -215,7 +236,7 @@ fun CartQuantityScreen(onNavigateToCartScreen: () -> Unit) {
         ) {
             /* TODO: replace with cart quantities */
             Text(
-                text = "4",
+                text = "$cartQuantity",
                 color = Color.White,
                 fontSize = 10.sp,
                 modifier = Modifier.align(Alignment.Center)

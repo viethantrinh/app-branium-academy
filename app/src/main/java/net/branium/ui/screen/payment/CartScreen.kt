@@ -17,25 +17,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import net.branium.data.model.dto.response.base.ApiResponse
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CartViewModel
 import net.branium.viewmodel.CartViewModel.CartItem
+import net.branium.viewmodel.HomeViewModel
 
 @Composable
 fun CartScreen(
+    homeViewModel: HomeViewModel,
     onNavigateToCheckOutScreen: (orderResponse: OrderResponse) -> Unit
 ) {
     val grouped = listOf<String>("Carts", "Wishlists").groupBy { it[0] }
@@ -124,7 +123,7 @@ fun CartScreen(
                                     isChecked  // Update the checked state when checkbox is clicked
                             },
                             onRemoveClicked = {
-                                cartViewModel.removeItemFromCart(cartItem)
+                                cartViewModel.removeItemFromCart(cartItem, homeViewModel)
                             }
                         )
                     }
@@ -133,7 +132,7 @@ fun CartScreen(
                         WishlistItemScreen(
                             wishlistItem = wishlistItem,
                             onAddToCartClicked = {
-                                cartViewModel.addWishlistItemToCart(wishlistItem)
+                                cartViewModel.addWishlistItemToCart(wishlistItem, homeViewModel)
                             },
                             onRemoveClicked = {
                                 cartViewModel.removeItemFromWishlist(wishlistItem)
@@ -162,11 +161,4 @@ fun CartScreen(
             Text(text = "Check Out")
         }
     }
-}
-
-
-@Composable
-@Preview(showBackground = true)
-fun CartScreenPreview() {
-    CartScreen(onNavigateToCheckOutScreen = {})
 }

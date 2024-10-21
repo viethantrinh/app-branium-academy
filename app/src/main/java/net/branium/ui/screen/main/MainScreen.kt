@@ -5,6 +5,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
@@ -22,18 +23,19 @@ import net.branium.ui.screen.search.SearchScreen
 import net.branium.ui.screen.wishlist.WishlistScreen
 import net.branium.viewmodel.CartViewModel
 import net.branium.viewmodel.CartViewModel.*
+import net.branium.viewmodel.HomeViewModel
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
+    val homeViewModel: HomeViewModel = hiltViewModel()
     Scaffold(
         topBar = {
             TopBarScreen(
                 navController = navController,
-                viewModel = null,
+                homeViewModel = homeViewModel,
                 onNavigateToCartScreen = {
                     navController.navigate(NavRoute.CartScreen.route)
                 }
@@ -53,7 +55,7 @@ fun MainScreen() {
             addCourseScreen(navController, this)
             addWishlistScreen(navController, this)
             addAccountScreen(navController, this)
-            addCartScreen(navController, this)
+            addCartScreen(navController, this, homeViewModel)
             addCheckout(navController, this)
         }
     }
@@ -99,11 +101,12 @@ fun addAccountScreen(navController: NavController, navGraphBuilder: NavGraphBuil
     }
 }
 
-fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder, homeViewModel: HomeViewModel) {
     navGraphBuilder.composable(
         route = NavRoute.CartScreen.route
     ) {
         CartScreen(
+            homeViewModel = homeViewModel,
             onNavigateToCheckOutScreen = { orderResponse ->
                 navController.currentBackStackEntry?.savedStateHandle?.set(
                     "orderResponse",

@@ -176,19 +176,3 @@ fun CartItemScreen(
 
     Spacer(modifier = Modifier.height(10.dp))
 }
-
-
-@Preview(showBackground = true)
-@Composable
-fun CartItemScreenPreview() {
-    val cartItem1 = CartItem(
-        id = 11,
-        title = "Java programming for beginner",
-        image = "https//ngu.com",
-        price = 1_000_000,
-        discountPrice = 987_000
-    )
-
-    CartItemScreen(cartItem = cartItem1, checked = true, onCheckChanged = {}, onRemoveClicked = {});
-
-}

@@ -1,10 +1,22 @@
 package net.branium.di
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import dagger.hilt.android.qualifiers.ApplicationContext
 import net.branium.util.Constants
 import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.math.log
 
-class CartQuantityManager @Inject constructor(val context: Context) {
+@Singleton
+class CartQuantityManager @Inject constructor(@ApplicationContext val context: Context) {
+
 
     private val sharedPreferences =
         context.getSharedPreferences("cart_quantities", Context.MODE_PRIVATE)

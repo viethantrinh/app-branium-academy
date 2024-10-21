@@ -3,7 +3,6 @@ package net.branium.viewmodel
 import android.content.Context
 import android.os.Parcelable
 import android.widget.Toast
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -60,12 +59,13 @@ class CartViewModel @Inject constructor(
     private var _apiResponseState = mutableStateOf<ApiResponseState?>(ApiResponseState.Processing)
     val apiResponseState: State<ApiResponseState?> = _apiResponseState
 
+
     init {
         fetchAllCartItems()
         fetchAllWishlistItems()
     }
 
-    fun fetchAllCartItems() {
+    private fun fetchAllCartItems() {
         viewModelScope.launch {
             when (val resultResponse = cartRepositoryImpl.listCartItems()) {
                 is ResultResponse.Success -> {
@@ -92,7 +92,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun fetchAllWishlistItems() {
+    private fun fetchAllWishlistItems() {
         viewModelScope.launch {
             when (val resultResponse = withListRepositoryImpl.listWishlistItems()) {
                 is ResultResponse.Success -> {
@@ -119,7 +119,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun removeItemFromCart(cartItem: CartItem) {
+    fun removeItemFromCart(cartItem: CartItem, homeViewModel: HomeViewModel) {
         viewModelScope.launch {
             when (val resultResponse = cartRepositoryImpl.removeCartItem(cartItem.id)) {
                 is ResultResponse.Success -> {
@@ -133,6 +133,7 @@ class CartViewModel @Inject constructor(
                             discountPrice = it.discountPrice
                         )
                     }
+                    homeViewModel.updateCartQuantity(newQuantity = _cartItems.value.count())
                 }
 
                 is ResultResponse.Error -> {
@@ -173,7 +174,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun addWishlistItemToCart(wishlistItem: WishlistItem) {
+    fun addWishlistItemToCart(wishlistItem: WishlistItem, homeViewModel: HomeViewModel) {
         viewModelScope.launch {
             when (val resultResponse = cartRepositoryImpl.addCartItem(wishlistItem.id)) {
                 is ResultResponse.Success -> {
@@ -188,6 +189,7 @@ class CartViewModel @Inject constructor(
                         )
                     }
                     _wishlistItems.value -= wishlistItem
+                    homeViewModel.updateCartQuantity(newQuantity = _cartItems.value.count())
                 }
 
                 is ResultResponse.Error -> {
