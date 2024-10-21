@@ -1,24 +1,33 @@
 package net.branium.ui.screeen.home
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.branium.R
@@ -28,18 +37,17 @@ import net.branium.data.model.dto.response.home.PopularCourse
 @Composable
 fun PopularCourseItem(course: PopularCourse, color: Color) {
     Spacer(modifier = Modifier.width(12.dp))
-    Column(
+    Card(
         modifier = Modifier
             .padding(4.dp)
             .width(280.dp)
-            .height(140.dp)
-            .background(
-                color = color,
-                shape = RoundedCornerShape(8.dp)
-            ),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .height(140.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(5.dp),
+        colors = CardDefaults.cardColors(color)
     ) {
         Column {
+            Spacer(modifier = Modifier.heightIn(8.dp))
             Image(
                 modifier = Modifier
                     .height(32.dp)
@@ -57,6 +65,8 @@ fun PopularCourseItem(course: PopularCourse, color: Color) {
                     .padding(end = 16.dp),
                 text = course.title,
                 color = Color.White,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 fontSize = 14.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -73,19 +83,18 @@ fun PopularCourseItem(course: PopularCourse, color: Color) {
                 Text(
                     text = course.totalStudents.toString() + " learner",
                     color = Color.White,
-                    fontSize = 10.sp,
-
-                    )
-
+                    fontSize = 12.sp,
+                )
                 Button(
                     onClick = { /*TODO go to detail course or learn now or enrolled*/ },
-                    colors = ButtonDefaults.buttonColors(Color.White)
+                    colors = ButtonDefaults.buttonColors(Color.White),
+                    modifier = Modifier.heightIn(18.dp)
                 ) {
-
                     Text(
-                        text = "Learn more",
+                        text = "Learn now",
                         color = color,
-                        fontSize = 12.sp
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
             }

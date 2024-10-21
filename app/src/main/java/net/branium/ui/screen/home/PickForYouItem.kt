@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import net.branium.R
 import net.branium.data.model.dto.response.home.TopPick
+import net.branium.util.formatToVND
 import kotlin.math.truncate
 
 @Composable
@@ -44,7 +46,7 @@ fun PickForYouItem(topPick: TopPick) {
             .width(172.dp)
             .border(
                 width = 0.5.dp,
-                color = colorResource(id = R.color.hint_color),
+                color = Color.LightGray,
             )
             .background(colorResource(id =  R.color.hint_color))
         ){
@@ -104,13 +106,13 @@ fun PickForYouItem(topPick: TopPick) {
                 ) {
                     Text(
                         modifier = Modifier.padding(end = 4.dp),
-                        text = "${topPick.price}đ",
+                        text = formatToVND(topPick.price),
                         fontSize = 10.sp,
                         textDecoration = TextDecoration.LineThrough
                         )
                     Text(
                         modifier = Modifier.padding(start = 4.dp),
-                        text = "${topPick.discountPrice}đ",
+                        text = formatToVND(topPick.discountPrice),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
 
