@@ -1,6 +1,5 @@
 package net.branium.ui.screen.main
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -180,6 +179,39 @@ fun TopBarScreen(
                 homeViewModel = homeViewModel
             )
         }
+
+        NavRoute.HomeScreen.DetailCategory.route + "/{categoryId}/{categoryName}"-> {
+            TopBar(
+                title = {
+                    Row(
+                        horizontalArrangement = Arrangement.Absolute.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowLeft,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
+                        }
+                        Text(
+                            text = "Category",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+                },
+                showCartQuantityScreen = true,
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
+
+            )
+        }
     }
 
 }
@@ -198,7 +230,10 @@ fun TopBar(
         },
         actions = {
             if (showCartQuantityScreen) {
-                CartQuantityScreen(onNavigateToCartScreen = onNavigateToCartScreen, homeViewModel = homeViewModel)
+                CartQuantityScreen(
+                    onNavigateToCartScreen = onNavigateToCartScreen,
+                    homeViewModel = homeViewModel
+                )
             }
         },
         backgroundColor = Color.White,

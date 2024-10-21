@@ -26,6 +26,12 @@ sealed class NavRoute(val route: String) {
         object Account : BottomScreen("account_screen", "Account", R.drawable.icon_nav_account_24)
     }
 
+    sealed class HomeScreen(val hRoute: String, val hTitle: String) : NavRoute(route = hRoute) {
+        object DetailCategory : HomeScreen("detail_category_screen", "DetailCategory")
+        object DetailPopularCourse : HomeScreen("detail_popular_course_screen", "DetailPopularCourse")
+        object DetailTopPick : HomeScreen("detail_top_pick_screen", "DetailTopPick")
+    }
+
     object CartScreen: NavRoute("cart_screen")
     object CheckoutScreen: NavRoute("checkout_screen")
 }
@@ -36,4 +42,10 @@ val navRouteBottom = listOf(
     NavRoute.BottomScreen.Course,
     NavRoute.BottomScreen.Wishlist,
     NavRoute.BottomScreen.Account,
+)
+
+val navRouteHome = listOf(
+    NavRoute.HomeScreen.DetailCategory,
+    NavRoute.HomeScreen.DetailPopularCourse,
+    NavRoute.HomeScreen.DetailTopPick,
 )

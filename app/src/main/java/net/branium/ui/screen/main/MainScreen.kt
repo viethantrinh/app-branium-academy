@@ -8,14 +8,17 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.ui.navigation.NavRoute
 import net.branium.ui.screen.account.AccountScreen
 import net.branium.ui.screen.course.CourseScreen
+import net.branium.ui.screen.home.CoursesOfCategory
 import net.branium.ui.screen.home.HomeScreen
 import net.branium.ui.screen.payment.CartScreen
 import net.branium.ui.screen.payment.CheckoutScreen
@@ -57,6 +60,7 @@ fun MainScreen() {
             addAccountScreen(navController, this)
             addCartScreen(navController, this, homeViewModel)
             addCheckout(navController, this, homeViewModel)
+            addDetailCategoryScreen(navController, this)
         }
     }
 }
@@ -65,7 +69,14 @@ fun addHomeScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
     navGraphBuilder.composable(
         route = NavRoute.BottomScreen.Home.bRoute
     ) {
-        HomeScreen()
+        HomeScreen(
+            onNavigateToDetailCategory = { categoryId, categoryName ->
+                navController.navigate(NavRoute.HomeScreen.DetailCategory.hRoute + "/$categoryId/$categoryName")
+            },
+
+            onNavigateToDetailCourse = {
+            }
+        )
     }
 }
 
@@ -133,6 +144,28 @@ fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder, 
                     navController.navigate(NavRoute.BottomScreen.Course.bRoute)
                 }
             )
+        }
+    }
+}
+
+fun addDetailCategoryScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+    navGraphBuilder.composable(
+        route = NavRoute.HomeScreen.DetailCategory.hRoute + "/{categoryId}/{categoryName}",
+        arguments = listOf(
+            navArgument(name = "categoryId"){
+                type = NavType.StringType
+            },
+            navArgument(name = "categoryName"){
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        backStackEntry.arguments?.let {
+            val categoryId = it.getString("categoryId")
+            val categoryName = it.getString("categoryName")
+            if (categoryId != null && categoryName != null) {
+                CoursesOfCategory(categoryId = categoryId, categoryName = categoryName )
+            }
         }
     }
 }

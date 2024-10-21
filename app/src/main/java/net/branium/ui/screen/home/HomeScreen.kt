@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onNavigateToDetailCategory: (String, String) -> Unit, onNavigateToDetailCourse: (String) -> Unit) {
     val context = LocalContext.current
     val homeViewModel: HomeViewModel = hiltViewModel()
     Column(
@@ -46,7 +46,9 @@ fun HomeScreen() {
         when (val responseState = homeViewModel.apiResponseState.value) {
             is ApiResponseState.Succeeded -> {
                 PopularCourse(courses = homeViewModel.popularCourses.value)
-                CategorySources(categories = homeViewModel.categories.value)
+                CategorySources(categories = homeViewModel.categories.value){ categoryId, categoryName ->
+                    onNavigateToDetailCategory(categoryId, categoryName)
+                }
                 TopPicks(topPicks = homeViewModel.topPicks.value)
             }
 
@@ -91,7 +93,7 @@ fun PopularCourse(courses: List<PopularCourse>) {
 }
 
 @Composable
-fun CategorySources(categories: List<Category>) {
+fun CategorySources(categories: List<Category>, navigationToCoursesOfCategory: (String, String) -> Unit) {
     Spacer(modifier = Modifier.height(16.dp))
     Text(
         modifier = Modifier.padding(start = 14.dp),
@@ -109,7 +111,7 @@ fun CategorySources(categories: List<Category>) {
         horizontalArrangement = Arrangement.spacedBy(14.dp)
     ) {
         items(categories) { category ->
-            CategoryCourseItem(category = category, {})
+            CategoryCourseItem(category = category, navigationToCoursesOfCategory)
         }
     }
 

@@ -2,6 +2,7 @@ package net.branium.ui.screeen.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +26,11 @@ import net.branium.R
 import net.branium.data.model.dto.response.home.Category
 
 @Composable
-fun CategoryCourseItem(category: Category, navigationToCourses: (Category) -> Unit) {
+fun CategoryCourseItem(category: Category, navigationToCoursesOfCategory: (String, String) -> Unit) {
     Column(
+        modifier = Modifier.clickable {
+            navigationToCoursesOfCategory(category.id, category.title)
+        },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -59,5 +63,5 @@ fun CategoryCourseItem(category: Category, navigationToCourses: (Category) -> Un
 @Preview(showBackground = true)
 @Composable
 fun CircleCategoryItemPreview() {
-    CategoryCourseItem(Category("1", "title", "image"), {})
+
 }
