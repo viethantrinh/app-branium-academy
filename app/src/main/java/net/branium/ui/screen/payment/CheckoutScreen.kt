@@ -45,15 +45,26 @@ import net.branium.data.model.dto.request.payment.PaymentRequest
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.util.formatToVND
 import net.branium.viewmodel.ApiResponseState
+import net.branium.viewmodel.HomeViewModel
 import net.branium.viewmodel.PaymentViewModel
 import net.branium.viewmodel.PaymentViewModel.*
 
 @Composable
-fun CheckoutScreen(orderResponse: OrderResponse, onNavigateToCourseScreen: () -> Unit) {
+fun CheckoutScreen(
+    orderResponse: OrderResponse,
+    homeViewModel: HomeViewModel,
+    onNavigateToCourseScreen: () -> Unit
+) {
     val context = LocalContext.current
     val paymentViewModel: PaymentViewModel = hiltViewModel()
     val paymentSheet = rememberPaymentSheet {
-        onPaymentSheetResult(it, onNavigateToCourseScreen, paymentViewModel, orderResponse)
+        onPaymentSheetResult(
+            it,
+            onNavigateToCourseScreen,
+            paymentViewModel,
+            homeViewModel,
+            orderResponse
+        )
     }
 
     LaunchedEffect(key1 = paymentViewModel.paymentResponse.value) {
@@ -224,6 +235,7 @@ private fun onPaymentSheetResult(
     paymentSheetResult: PaymentSheetResult,
     onNavigateToCourseScreen: () -> Unit,
     paymentViewModel: PaymentViewModel,
+    homeViewModel: HomeViewModel,
     orderResponse: OrderResponse
 ) {
     when (paymentSheetResult) {
@@ -245,6 +257,9 @@ private fun onPaymentSheetResult(
             print("Succeeded")
             val request = OrderStatusUpdateRequest(status = "succeeded")
             paymentViewModel.updateOrderStatus(request, orderResponse.orderId)
+            homeViewModel.deleteCartQuantityAfterPaymentSuccess(
+                orderResponse.orderDetails.count()
+            )
             onNavigateToCourseScreen()
         }
     }

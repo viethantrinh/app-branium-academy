@@ -56,7 +56,7 @@ fun MainScreen() {
             addWishlistScreen(navController, this)
             addAccountScreen(navController, this)
             addCartScreen(navController, this, homeViewModel)
-            addCheckout(navController, this)
+            addCheckout(navController, this, homeViewModel)
         }
     }
 }
@@ -118,7 +118,7 @@ fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
     }
 }
 
-fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder, homeViewModel: HomeViewModel) {
     navGraphBuilder.composable(
         route = NavRoute.CheckoutScreen.route
     ) {
@@ -127,6 +127,7 @@ fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder) 
         if (orderResponse != null) {
             CheckoutScreen(
                 orderResponse = orderResponse,
+                homeViewModel = homeViewModel,
                 onNavigateToCourseScreen = {
                     // Navigate back to the home screen
                     navController.navigate(NavRoute.BottomScreen.Course.bRoute)

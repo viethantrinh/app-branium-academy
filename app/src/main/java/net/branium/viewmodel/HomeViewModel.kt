@@ -78,4 +78,9 @@ class HomeViewModel @Inject constructor(
         _cartQuantity.intValue = newQuantity
         cartQuantityManager.storeCartQuantity(newQuantity)
     }
+
+    fun deleteCartQuantityAfterPaymentSuccess(number: Int) {
+        _cartQuantity.intValue -= number
+        cartQuantityManager.storeCartQuantity(_cartQuantity.intValue)
+    }
 }
