@@ -212,6 +212,32 @@ fun TopBarScreen(
 
             )
         }
+        NavRoute.DetailCourseScreen.route + "/{courseId}"-> {
+            TopBar(
+                title = {
+                    Row(
+                        horizontalArrangement = Arrangement.Absolute.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowLeft,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
+                        }
+                    }
+                },
+                showCartQuantityScreen = true,
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
+            )
+        }
     }
 
 }

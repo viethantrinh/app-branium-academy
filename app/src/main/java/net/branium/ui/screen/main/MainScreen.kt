@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.ui.navigation.NavRoute
 import net.branium.ui.screen.account.AccountScreen
+import net.branium.ui.screen.course.CourseDetailScreen
 import net.branium.ui.screen.course.CourseScreen
 import net.branium.ui.screen.home.CoursesOfCategory
 import net.branium.ui.screen.home.HomeScreen
@@ -61,6 +62,7 @@ fun MainScreen() {
             addCartScreen(navController, this, homeViewModel)
             addCheckout(navController, this, homeViewModel)
             addDetailCategoryScreen(navController, this)
+            addDetailCourseScreen(navController, this)
         }
     }
 }
@@ -92,7 +94,11 @@ fun addCourseScreen(navController: NavController, navGraphBuilder: NavGraphBuild
     navGraphBuilder.composable(
         route = NavRoute.BottomScreen.Course.bRoute
     ) {
-        CourseScreen()
+        CourseScreen(
+            onNavigateToDetailCourse = { courseId ->
+                navController.navigate(NavRoute.DetailCourseScreen.route + "/$courseId")
+            }
+        )
     }
 }
 
@@ -112,7 +118,11 @@ fun addAccountScreen(navController: NavController, navGraphBuilder: NavGraphBuil
     }
 }
 
-fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder, homeViewModel: HomeViewModel) {
+fun addCartScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    homeViewModel: HomeViewModel
+) {
     navGraphBuilder.composable(
         route = NavRoute.CartScreen.route
     ) {
@@ -129,7 +139,11 @@ fun addCartScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
     }
 }
 
-fun addCheckout(navController: NavController, navGraphBuilder: NavGraphBuilder, homeViewModel: HomeViewModel) {
+fun addCheckout(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    homeViewModel: HomeViewModel
+) {
     navGraphBuilder.composable(
         route = NavRoute.CheckoutScreen.route
     ) {
@@ -152,10 +166,10 @@ fun addDetailCategoryScreen(navController: NavController, navGraphBuilder: NavGr
     navGraphBuilder.composable(
         route = NavRoute.HomeScreen.DetailCategory.hRoute + "/{categoryId}/{categoryName}",
         arguments = listOf(
-            navArgument(name = "categoryId"){
+            navArgument(name = "categoryId") {
                 type = NavType.StringType
             },
-            navArgument(name = "categoryName"){
+            navArgument(name = "categoryName") {
                 type = NavType.StringType
             }
         )
@@ -164,8 +178,26 @@ fun addDetailCategoryScreen(navController: NavController, navGraphBuilder: NavGr
             val categoryId = it.getString("categoryId")
             val categoryName = it.getString("categoryName")
             if (categoryId != null && categoryName != null) {
-                CoursesOfCategory(categoryId = categoryId, categoryName = categoryName )
+                CoursesOfCategory(categoryId = categoryId, categoryName = categoryName)
             }
+        }
+    }
+}
+
+
+fun addDetailCourseScreen(navController: NavController, navGraphBuilder: NavGraphBuilder){
+    navGraphBuilder.composable(
+        route = NavRoute.DetailCourseScreen.route + "/{courseId}",
+        arguments = listOf(
+            navArgument(name = "courseId"){
+                type = NavType.IntType
+            }
+        )
+    ){
+        backStackEntry ->
+        backStackEntry.arguments?.let {
+            val courseId = it.getInt("courseId")
+            CourseDetailScreen(courseId = courseId)
         }
     }
 }

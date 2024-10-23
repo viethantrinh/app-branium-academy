@@ -10,7 +10,10 @@
 
     <color name="primary">#F95E0A</color>
     <color name="primary_600">#EA4B0C</color>
+    <color name="primary_400">#FB873C</color>
     <color name="hint_color">#A0A0A0</color>
+    <color name="sencondary">#696C70</color>
+    <color name="color_button_all">#F7F7F7</color>
     <color name="color_author">#696C70</color>
     <color name="color_popular_1">#9DE9F6</color>
     <color name="color_popular_2">#DC9984</color>
