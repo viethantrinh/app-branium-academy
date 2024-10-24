@@ -19,14 +19,12 @@ import net.branium.ui.navigation.NavRoute
 import net.branium.ui.screen.account.AccountScreen
 import net.branium.ui.screen.course.CourseDetailScreen
 import net.branium.ui.screen.course.CourseScreen
-import net.branium.ui.screen.home.CoursesOfCategory
+import net.branium.ui.screen.category.CoursesOfCategory
 import net.branium.ui.screen.home.HomeScreen
 import net.branium.ui.screen.payment.CartScreen
 import net.branium.ui.screen.payment.CheckoutScreen
 import net.branium.ui.screen.search.SearchScreen
 import net.branium.ui.screen.wishlist.WishlistScreen
-import net.branium.viewmodel.CartViewModel
-import net.branium.viewmodel.CartViewModel.*
 import net.branium.viewmodel.HomeViewModel
 
 @Composable

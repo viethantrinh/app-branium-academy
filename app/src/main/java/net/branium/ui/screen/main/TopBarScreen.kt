@@ -201,7 +201,7 @@ fun TopBarScreen(
                         }
                         Text(
                             text = "Category",
-                            fontSize = 24.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }

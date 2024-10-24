@@ -1,4 +1,4 @@
-package net.branium.ui.screen.home
+package net.branium.ui.screen.category
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,12 +20,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.branium.R
-import net.branium.data.model.dto.response.course.CourseResponse
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CategoryViewModel
 
@@ -70,7 +66,7 @@ fun CoursesOfCategory(categoryId: String, categoryName: String) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = "Courses with $categoryName",
-                    fontSize = 14.sp,
+                    fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = colorResource(id = R.color.primary_600)
                 )

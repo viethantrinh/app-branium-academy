@@ -1,4 +1,4 @@
-package net.branium.ui.screen.home
+package net.branium.ui.screen.category
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
