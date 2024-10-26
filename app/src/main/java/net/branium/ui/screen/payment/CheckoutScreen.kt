@@ -53,14 +53,14 @@ import net.branium.viewmodel.PaymentViewModel.*
 fun CheckoutScreen(
     orderResponse: OrderResponse,
     homeViewModel: HomeViewModel,
-    onNavigateToCourseScreen: () -> Unit
+    onNavigateToHomeScreen: () -> Unit
 ) {
     val context = LocalContext.current
     val paymentViewModel: PaymentViewModel = hiltViewModel()
     val paymentSheet = rememberPaymentSheet {
         onPaymentSheetResult(
             it,
-            onNavigateToCourseScreen,
+            onNavigateToHomeScreen,
             paymentViewModel,
             homeViewModel,
             orderResponse

@@ -151,9 +151,9 @@ fun addCheckout(
             CheckoutScreen(
                 orderResponse = orderResponse,
                 homeViewModel = homeViewModel,
-                onNavigateToCourseScreen = {
+                onNavigateToHomeScreen = {
                     // Navigate back to the home screen
-                    navController.navigate(NavRoute.BottomScreen.Course.bRoute)
+                    navController.navigate(NavRoute.BottomScreen.Home.bRoute)
                 }
             )
         }
@@ -183,16 +183,15 @@ fun addDetailCategoryScreen(navController: NavController, navGraphBuilder: NavGr
 }
 
 
-fun addDetailCourseScreen(navController: NavController, navGraphBuilder: NavGraphBuilder){
+fun addDetailCourseScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
     navGraphBuilder.composable(
         route = NavRoute.DetailCourseScreen.route + "/{courseId}",
         arguments = listOf(
-            navArgument(name = "courseId"){
+            navArgument(name = "courseId") {
                 type = NavType.IntType
             }
         )
-    ){
-        backStackEntry ->
+    ) { backStackEntry ->
         backStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
             CourseDetailScreen(courseId = courseId)

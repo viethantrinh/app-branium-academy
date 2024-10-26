@@ -1,6 +1,5 @@
 package net.branium.ui.screen.course
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,23 +11,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import net.branium.R
-import net.branium.data.model.dto.response.course.CourseResponse
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import net.branium.viewmodel.CourseViewModel
 
 @Composable
@@ -77,9 +72,4 @@ fun CourseScreen(onNavigateToDetailCourse: (Int) -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CourseScreenPreview() {
-    CourseScreen({})
-}
 
