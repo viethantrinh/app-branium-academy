@@ -90,9 +90,7 @@ fun PopularCourseItem(course: CourseDetailResponse, color: Color, onNavigateToDe
                     modifier = Modifier.heightIn(18.dp)
                 ) {
                     Text(
-                        text = if (option == OptionCourseDetailScreen.BuyNowOption.option)
-                            formatToVND(course.discountPrice)
-                        else option,
+                        text = "Learn now",
                         color = color,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold

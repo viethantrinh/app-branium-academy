@@ -61,7 +61,7 @@ fun MainScreen() {
             addCartScreen(navController, this, homeViewModel)
             addCheckout(navController, this, homeViewModel)
             addDetailCategoryScreen(navController, this)
-            addDetailCourseScreen(navController, this)
+            addDetailCourseScreen(navController, homeViewModel, this)
             addDetailCourseVideoScreen(navController, this)
         }
     }
@@ -193,7 +193,11 @@ fun addDetailCategoryScreen(navController: NavController, navGraphBuilder: NavGr
 }
 
 
-fun addDetailCourseScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+fun addDetailCourseScreen(
+    navController: NavController,
+    homeViewModel: HomeViewModel,
+    navGraphBuilder: NavGraphBuilder
+) {
     navGraphBuilder.composable(
         route = NavRoute.DetailCourseScreen.route + "/{courseId}",
         arguments = listOf(
@@ -204,7 +208,7 @@ fun addDetailCourseScreen(navController: NavController, navGraphBuilder: NavGrap
     ) { backStackEntry ->
         backStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
-            CourseDetailScreen(courseId = courseId) {
+            CourseDetailScreen(courseId = courseId, homeViewModel= homeViewModel) {
                 navController.navigate(NavRoute.DetailCourseVideoScreen.route + "/$courseId")
             }
         }
@@ -219,7 +223,7 @@ fun addDetailCourseVideoScreen(navController: NavController, navGraphBuilder: Na
                 type = NavType.IntType
             }
         )
-    ){navBackStackEntry -> 
+    ) { navBackStackEntry ->
         navBackStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
             CourseDetailVideoScreen(courseId = courseId)

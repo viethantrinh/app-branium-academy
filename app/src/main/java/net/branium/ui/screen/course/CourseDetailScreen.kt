@@ -53,9 +53,10 @@ import net.branium.util.getOptionCourseDetail
 import net.branium.util.splitDescription
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CourseViewModel
+import net.branium.viewmodel.HomeViewModel
 
 @Composable
-fun CourseDetailScreen(courseId: Int, onNavigateToCourseVideoScreen: (Int) -> Unit) {
+fun CourseDetailScreen(courseId: Int, homeViewModel: HomeViewModel, onNavigateToCourseVideoScreen: (Int) -> Unit) {
     val context = LocalContext.current
     val courseViewModel: CourseViewModel = hiltViewModel()
     LaunchedEffect(courseId) {
