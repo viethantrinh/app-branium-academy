@@ -3,6 +3,7 @@ package net.branium.ui.screen.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,11 +36,14 @@ import net.branium.util.formatToVND
 import kotlin.math.truncate
 
 @Composable
-fun PickForYouItem(topPick: TopPick) {
+fun PickForYouItem(topPick: TopPick, onNavigateToDetailCourse: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .height(160.dp)
-            .width(172.dp),
+            .width(172.dp)
+            .clickable {
+                onNavigateToDetailCourse(topPick.id)
+            }
     ) {
         Box(modifier = Modifier
             .height(80.dp)
@@ -128,5 +132,5 @@ fun PickForYouItem(topPick: TopPick) {
 @Preview(showBackground = true)
 @Composable
 fun PickForYouItemPreview() {
-    PickForYouItem(topPick = TopPick(1, "Java  core siêu vip pro mua 1 tặng 1 khóa c++", "", 11.0, 10.0))
+
 }

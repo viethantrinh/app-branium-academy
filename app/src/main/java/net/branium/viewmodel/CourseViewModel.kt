@@ -2,20 +2,26 @@ package net.branium.viewmodel
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import net.branium.data.model.dto.response.base.ResultResponse
 import net.branium.data.model.dto.response.course.CourseDetailResponse
 import net.branium.data.model.dto.response.course.CourseResponse
+import net.branium.data.model.dto.response.home.PopularCourse
 import net.branium.data.repository.impl.CourseRepositoryImpI
 import javax.inject.Inject
 
 @HiltViewModel
-class CourseViewModel @Inject constructor(private val courseRepository: CourseRepositoryImpI) :
+class CourseViewModel @Inject constructor(
+    private val courseRepository: CourseRepositoryImpI,
+) :
     ViewModel() {
-    private var _apiResponseState = mutableStateOf<ApiResponseState?>(null)
+    private var _apiResponseState = mutableStateOf<ApiResponseState?>(ApiResponseState.Processing)
     val apiResponseState: State<ApiResponseState?> = _apiResponseState
 
     private var _listMyCourses = mutableStateOf<List<CourseResponse>>(emptyList())
@@ -24,8 +30,12 @@ class CourseViewModel @Inject constructor(private val courseRepository: CourseRe
     private var _courseDetail = mutableStateOf(CourseDetailResponse())
     val courseDetail: State<CourseDetailResponse> = _courseDetail
 
+    private var _listPopularCourseDetails = mutableStateOf<List<CourseDetailResponse>>(emptyList())
+    val listPopularCourseDetails: State<List<CourseDetailResponse>> = _listPopularCourseDetails
+
     init {
         getListMyCourses() // Gọi hàm này để lấy dữ liệu ngay khi ViewModel được khởi tạo
+
     }
 
     fun getListMyCourses() {
@@ -42,11 +52,17 @@ class CourseViewModel @Inject constructor(private val courseRepository: CourseRe
                     _apiResponseState.value?.message = "load failed"
                     _listMyCourses.value = emptyList()
                 }
-                else -> {
-                    _apiResponseState.value = ApiResponseState.Failed
-                    _apiResponseState.value?.message = "load failed"
-                }
             }
+        }
+    }
+
+     fun getListPopularCourseDetails(popularCourses: List<PopularCourse>) {
+        viewModelScope.launch {
+            val courseDetails = popularCourses.map { course ->
+                async { courseRepository.getCourseDetail(course.id) }
+            }.awaitAll().mapNotNull { (it as? ResultResponse.Success)?.data }
+
+            _listPopularCourseDetails.value = courseDetails
         }
     }
 
@@ -63,10 +79,6 @@ class CourseViewModel @Inject constructor(private val courseRepository: CourseRe
                     _apiResponseState.value = ApiResponseState.Failed
                     _apiResponseState.value?.message = "load failed"
                     _courseDetail.value = CourseDetailResponse()
-                }
-                else ->{
-                    _apiResponseState.value = ApiResponseState.Processing
-                    _apiResponseState.value?.message = "Processing"
                 }
             }
 

@@ -1,9 +1,6 @@
 package net.branium.ui.screeen.home
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,12 +15,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,11 +26,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import net.branium.R
-import net.branium.data.model.dto.response.home.PopularCourse
+import net.branium.data.model.dto.response.course.CourseDetailResponse
+import net.branium.ui.screen.course.OptionCourseDetailScreen
+import net.branium.util.formatToVND
+import net.branium.util.getOptionCourseDetail
 
 //source: Source, navigationToDetail: (Source) -> Unit
 @Composable
-fun PopularCourseItem(course: PopularCourse, color: Color) {
+fun PopularCourseItem(course: CourseDetailResponse, color: Color, onNavigateToDetailCourse: (Int) -> Unit) {
+    val option = getOptionCourseDetail(course.paid, course.enrolled)
     Spacer(modifier = Modifier.width(12.dp))
     Card(
         modifier = Modifier
@@ -86,20 +85,20 @@ fun PopularCourseItem(course: PopularCourse, color: Color) {
                     fontSize = 12.sp,
                 )
                 Button(
-                    onClick = { /*TODO go to detail course or learn now or enrolled*/ },
+                    onClick = { onNavigateToDetailCourse(course.id)},
                     colors = ButtonDefaults.buttonColors(Color.White),
                     modifier = Modifier.heightIn(18.dp)
                 ) {
                     Text(
-                        text = "Learn now",
+                        text = if (option == OptionCourseDetailScreen.BuyNowOption.option)
+                            formatToVND(course.discountPrice)
+                        else option,
                         color = color,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
             }
-
         }
     }
-
 }

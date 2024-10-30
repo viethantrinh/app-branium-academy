@@ -1,6 +1,5 @@
 package net.branium.ui.screen.course
 
-import android.text.TextUtils
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,11 +21,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,32 +44,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import net.branium.R
 import net.branium.data.model.dto.response.course.CourseDetailResponse
 import net.branium.data.model.dto.response.course.Lecture
 import net.branium.data.model.dto.response.course.Section
+import net.branium.util.getOptionCourseDetail
 import net.branium.util.splitDescription
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CourseViewModel
 
 @Composable
-fun CourseDetailScreen(courseId: Int) {
+fun CourseDetailScreen(courseId: Int, onNavigateToCourseVideoScreen: (Int) -> Unit) {
     val context = LocalContext.current
     val courseViewModel: CourseViewModel = hiltViewModel()
     LaunchedEffect(courseId) {
         courseViewModel.getCourseDetail(courseId)
     }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 32.dp, bottom = 32.dp)
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
             .verticalScroll(rememberScrollState())
     ) {
         when(val responseState = courseViewModel.apiResponseState.value){
             is ApiResponseState.Succeeded -> {
                 val courseDetail = courseViewModel.courseDetail.value
                 CourseIntroduce(courseDetail = courseDetail)
-                OptionScreen(courseDetail = courseDetail)
+                OptionScreen(courseDetail = courseDetail){courseId ->
+                    onNavigateToCourseVideoScreen(courseId)
+                }
                 Spacer(modifier = Modifier.height(32.dp))
                 WillLearnScreen(courseDetail = courseDetail)
                 Spacer(modifier = Modifier.height(32.dp))
@@ -99,7 +100,7 @@ fun CourseDetailScreen(courseId: Int) {
 @Composable
 fun CourseIntroduce(courseDetail: CourseDetailResponse) {
     Image(
-        painter = painterResource(id = R.drawable.image),
+        painter = rememberAsyncImagePainter(courseDetail.image),
         contentDescription = null,
         modifier = Modifier
             .width(382.dp)
@@ -138,93 +139,21 @@ fun CourseIntroduce(courseDetail: CourseDetailResponse) {
 }
 
 @Composable
-fun OptionScreen(courseDetail: CourseDetailResponse) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-
-    ) {
-        IconButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier.align(Alignment.CenterEnd)
-
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_favorite_24),
-                contentDescription = null,
-                tint = colorResource(id = R.color.primary)
-
-            )
+fun OptionScreen(courseDetail: CourseDetailResponse, onNavigateToCourseVideoScreen: (Int) -> Unit) {
+    val option = getOptionCourseDetail(courseDetail.paid, courseDetail.enrolled)
+    when (option) {
+        OptionCourseDetailScreen.LearnNowOption.option -> {
+            LearnNowOptionCourseScreen(courseDetail = courseDetail, onNavigateToCourseVideoScreen)
         }
-    }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp),
-
-        ) {
-        Row(
-            modifier = Modifier.height(20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = "Creator: ", fontSize = 12.sp)
-            Text(
-                text = "Trinh Han",
-                fontSize = 12.sp,
-                color = colorResource(id = R.color.primary)
-            )
+        OptionCourseDetailScreen.EnrollOption.option -> {
+            EnrollOptionCourseScreen(courseDetail = courseDetail)
         }
-        Row(
-            modifier = Modifier
-                .height(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.icon_update_alt_24),
-                contentDescription = null,
-                Modifier.size(12.dp)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "last updated: ${courseDetail.updatedAt}",
-                fontSize = 8.sp,
-            )
+        OptionCourseDetailScreen.BuyNowOption.option ->{
+            BuyNowOptionCourseScreen(courseDetail = courseDetail)
         }
-        Row(
-            modifier = Modifier
-                .height(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ic_language_24),
-                contentDescription = null,
-                Modifier.size(12.dp)
-            )
-            Spacer(modifier = Modifier.width(4.dp))
-            Text(
-                text = "Language: Vietnamese",
-                fontSize = 8.sp,
-            )
+        else -> {
+            Unit
         }
-    }
-
-    Spacer(modifier = Modifier.height(20.dp))
-    Button(
-        onClick = {
-
-        },
-        modifier = Modifier
-            .fillMaxWidth(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFF95E0A),
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(size = 8.dp)
-    ) {
-        Text(text = "Go to course")
     }
 }
 
@@ -305,7 +234,9 @@ fun CurriculumScreen(courseDetail: CourseDetailResponse) {
                         Divider(
                             color = Color.Gray,
                             thickness = 0.5.dp,
-                            modifier = Modifier.padding(vertical = 8.dp).padding(start = 16.dp, end = 16.dp)
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .padding(start = 16.dp, end = 16.dp)
                         )
                     }
                 }
@@ -318,7 +249,7 @@ fun CurriculumScreen(courseDetail: CourseDetailResponse) {
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailPreview() {
-    CourseDetailScreen(courseId = 1)
+
 }
 
 @Composable
@@ -365,7 +296,7 @@ fun LectureItem(lecture: Lecture) {
             modifier = Modifier
                 .width(343.dp)
                 .wrapContentHeight()
-            .padding(start = 16.dp, end = 16.dp),
+                .padding(start = 16.dp, end = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
