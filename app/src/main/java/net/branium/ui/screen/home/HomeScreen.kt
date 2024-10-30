@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,12 +33,19 @@ import net.branium.ui.screeen.home.PopularCourseItem
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.HomeViewModel
 import androidx.compose.ui.platform.LocalContext
+import net.branium.data.model.dto.response.course.CourseDetailResponse
+import net.branium.viewmodel.CourseViewModel
 
 
 @Composable
-fun HomeScreen(onNavigateToDetailCategory: (String, String) -> Unit, onNavigateToDetailCourse: (String) -> Unit) {
+fun HomeScreen(onNavigateToDetailCategory: (String, String) -> Unit, onNavigateToDetailCourse: (Int) -> Unit) {
     val context = LocalContext.current
     val homeViewModel: HomeViewModel = hiltViewModel()
+    val courseViewModel: CourseViewModel = hiltViewModel()
+    courseViewModel.getListPopularCourseDetails(homeViewModel.popularCourses.value)
+    LaunchedEffect(Unit) {
+        courseViewModel.getListPopularCourseDetails(homeViewModel.popularCourses.value)
+    }
     Column(
         modifier = Modifier.fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -45,11 +53,15 @@ fun HomeScreen(onNavigateToDetailCategory: (String, String) -> Unit, onNavigateT
 
         when (val responseState = homeViewModel.apiResponseState.value) {
             is ApiResponseState.Succeeded -> {
-                PopularCourse(courses = homeViewModel.popularCourses.value)
+                PopularCourse(courses = courseViewModel.listPopularCourseDetails.value){courseId ->
+                    onNavigateToDetailCourse(courseId)
+                }
                 CategorySources(categories = homeViewModel.categories.value){ categoryId, categoryName ->
                     onNavigateToDetailCategory(categoryId, categoryName)
                 }
-                TopPicks(topPicks = homeViewModel.topPicks.value)
+                TopPicks(topPicks = homeViewModel.topPicks.value){courseId ->
+                    onNavigateToDetailCourse(courseId)
+                }
             }
 
             is ApiResponseState.Failed -> {
@@ -67,7 +79,7 @@ fun HomeScreen(onNavigateToDetailCategory: (String, String) -> Unit, onNavigateT
 }
 
 @Composable
-fun PopularCourse(courses: List<PopularCourse>) {
+fun PopularCourse(courses: List<CourseDetailResponse>, onNavigateToDetailCourse: (Int) -> Unit) {
     val colors = listOf(
         colorResource(id = R.color.color_popular_3),
         colorResource(id = R.color.color_popular_1),
@@ -86,7 +98,7 @@ fun PopularCourse(courses: List<PopularCourse>) {
         items(courses) { course ->
             val index = courses.indexOf(course) % colors.size
             val color = colors[index]
-            PopularCourseItem(course = course, color)
+            PopularCourseItem(course = course, color, onNavigateToDetailCourse)
         }
     }
 
@@ -119,7 +131,7 @@ fun CategorySources(categories: List<Category>, navigationToCoursesOfCategory: (
 }
 
 @Composable
-fun TopPicks(topPicks: List<TopPick>) {
+fun TopPicks(topPicks: List<TopPick>, onNavigateToDetailCourse: (Int) -> Unit) {
     Spacer(modifier = Modifier.height(8.dp))
     Text(
         modifier = Modifier.padding(start = 14.dp),
@@ -134,7 +146,7 @@ fun TopPicks(topPicks: List<TopPick>) {
         horizontalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         items(topPicks) { topPick ->
-            PickForYouItem(topPick)
+            PickForYouItem(topPick, onNavigateToDetailCourse)
         }
     }
 

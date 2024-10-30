@@ -16,7 +16,7 @@ data class CourseDetailResponse(
     val paid: Boolean = false,
     val enrolled: Boolean = false,
     val inCart: Boolean = false,
-    val inWishList: Boolean = false,
+    var inWishList: Boolean = false,
     val sections: List<Section> = emptyList()
 )
 

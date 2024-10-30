@@ -3,6 +3,7 @@ package net.branium.viewmodel
 import android.content.Context
 import android.os.Parcelable
 import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 import net.branium.data.model.dto.request.payment.OrderItemRequest
 import net.branium.data.model.dto.response.base.ResultResponse
+import net.branium.data.model.dto.response.course.CourseResponse
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.data.repository.impl.CartRepositoryImpl
 import net.branium.data.repository.impl.PaymentRepositoryImpl
@@ -59,6 +61,8 @@ class CartViewModel @Inject constructor(
     private var _apiResponseState = mutableStateOf<ApiResponseState?>(ApiResponseState.Processing)
     val apiResponseState: State<ApiResponseState?> = _apiResponseState
 
+    private var _responseState = mutableStateOf<ResponseState?>(null)
+    val responseState: State<ResponseState?> = _responseState
 
     init {
         fetchAllCartItems()
@@ -223,6 +227,71 @@ class CartViewModel @Inject constructor(
                 is ResultResponse.Error -> {
                     _apiResponseState.value = ApiResponseState.Failed
                     _apiResponseState.value?.message = resultResponse.exception.message.toString()
+                }
+            }
+        }
+    }
+
+    fun addCartItem(cartId : Int, homeViewModel: HomeViewModel){
+        viewModelScope.launch {
+            _responseState.value = ResponseState.Processing("Processing")
+            when (val resultResponse = cartRepositoryImpl.addCartItem(cartId)) {
+                is ResultResponse.Success -> {
+                    val courses = resultResponse.data!!
+                    _cartItems.value = courses.map {
+                        CartItem(
+                            id = it.id,
+                            title = it.title,
+                            image = it.image,
+                            price = it.price,
+                            discountPrice = it.discountPrice
+                        )
+                    }
+
+                    homeViewModel.updateCartQuantity(newQuantity = _cartItems.value.count())
+                    _responseState.value = ResponseState.Processing("Succeeded")
+
+                }
+
+                is ResultResponse.Error -> {
+                    Toast.makeText(
+                        context,
+                        resultResponse.exception.message.toString(),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    _responseState.value = ResponseState.Processing("Failed")
+
+                }
+            }
+        }
+    }
+
+    fun removeCartItem(cartId : Int, homeViewModel: HomeViewModel){
+        viewModelScope.launch {
+            _responseState.value = ResponseState.Processing("Processing")
+            when (val resultResponse = cartRepositoryImpl.removeCartItem(cartId)) {
+                is ResultResponse.Success -> {
+                    val courses = resultResponse.data!!
+                    _cartItems.value = courses.map {
+                        CartItem(
+                            id = it.id,
+                            title = it.title,
+                            image = it.image,
+                            price = it.price,
+                            discountPrice = it.discountPrice
+                        )
+                    }
+                    homeViewModel.updateCartQuantity(newQuantity = _cartItems.value.count())
+                    _responseState.value = ResponseState.Succeeded("Succeeded")
+                }
+
+                is ResultResponse.Error -> {
+                    Toast.makeText(
+                        context,
+                        resultResponse.exception.message.toString(),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    _responseState.value = ResponseState.Succeeded("Failed")
                 }
             }
         }

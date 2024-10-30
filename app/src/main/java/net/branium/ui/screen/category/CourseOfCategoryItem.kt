@@ -2,6 +2,7 @@ package net.branium.ui.screen.category
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,11 +32,14 @@ import net.branium.data.model.dto.response.course.CourseResponse
 import net.branium.util.formatToVND
 
 @Composable
-fun CourseOfCategoryItem(course: CourseResponse) {
+fun CourseOfCategoryItem(course: CourseResponse, onNavigateToDetailCourse: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .width(382.dp)
             .height(200.dp)
+            .clickable {
+                onNavigateToDetailCourse(course.id)
+            }
     ) {
         Box(
             modifier = Modifier
@@ -116,5 +120,5 @@ fun CourseOfCategoryItem(course: CourseResponse) {
 @Composable
 fun CourseOfCategoryItemPreview() {
     val course = CourseResponse(1, "Android 14 App Developer Bootcamp 2024", "", 1500000, 1000000)
-    CourseOfCategoryItem(course)
+    CourseOfCategoryItem(course, {})
 }

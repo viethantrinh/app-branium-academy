@@ -46,7 +46,7 @@ fun TitleDetailCategory() {
 }
 
 @Composable
-fun CoursesOfCategory(categoryId: String, categoryName: String) {
+fun CoursesOfCategory(categoryId: String, categoryName: String, onNavigateToDetailCourse: (Int) -> Unit) {
     val categoryViewModel: CategoryViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -75,7 +75,9 @@ fun CoursesOfCategory(categoryId: String, categoryName: String) {
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(courses) { course ->
-                        CourseOfCategoryItem(course = course)
+                        CourseOfCategoryItem(course = course){courseId ->
+                            onNavigateToDetailCourse(courseId)
+                        }
                     }
                 }
             }

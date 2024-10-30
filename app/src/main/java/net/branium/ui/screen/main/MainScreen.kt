@@ -20,6 +20,7 @@ import net.branium.ui.screen.account.AccountScreen
 import net.branium.ui.screen.course.CourseDetailScreen
 import net.branium.ui.screen.course.CourseScreen
 import net.branium.ui.screen.category.CoursesOfCategory
+import net.branium.ui.screen.video.CourseDetailVideoScreen
 import net.branium.ui.screen.home.HomeScreen
 import net.branium.ui.screen.payment.CartScreen
 import net.branium.ui.screen.payment.CheckoutScreen
@@ -61,6 +62,7 @@ fun MainScreen() {
             addCheckout(navController, this, homeViewModel)
             addDetailCategoryScreen(navController, this)
             addDetailCourseScreen(navController, this)
+            addDetailCourseVideoScreen(navController, this)
         }
     }
 }
@@ -74,7 +76,8 @@ fun addHomeScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
                 navController.navigate(NavRoute.HomeScreen.DetailCategory.hRoute + "/$categoryId/$categoryName")
             },
 
-            onNavigateToDetailCourse = {
+            onNavigateToDetailCourse = { courseId ->
+                navController.navigate(NavRoute.DetailCourseScreen.route + "/$courseId")
             }
         )
     }
@@ -104,7 +107,9 @@ fun addWishlistScreen(navController: NavController, navGraphBuilder: NavGraphBui
     navGraphBuilder.composable(
         route = NavRoute.BottomScreen.Wishlist.bRoute
     ) {
-        WishlistScreen()
+        WishlistScreen() { courseId ->
+            navController.navigate(NavRoute.DetailCourseScreen.route + "/$courseId")
+        }
     }
 }
 
@@ -176,7 +181,12 @@ fun addDetailCategoryScreen(navController: NavController, navGraphBuilder: NavGr
             val categoryId = it.getString("categoryId")
             val categoryName = it.getString("categoryName")
             if (categoryId != null && categoryName != null) {
-                CoursesOfCategory(categoryId = categoryId, categoryName = categoryName)
+                CoursesOfCategory(
+                    categoryId = categoryId,
+                    categoryName = categoryName,
+                    onNavigateToDetailCourse = { courseId ->
+                        navController.navigate(NavRoute.DetailCourseScreen.route + "/$courseId")
+                    })
             }
         }
     }
@@ -194,7 +204,25 @@ fun addDetailCourseScreen(navController: NavController, navGraphBuilder: NavGrap
     ) { backStackEntry ->
         backStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
-            CourseDetailScreen(courseId = courseId)
+            CourseDetailScreen(courseId = courseId) {
+                navController.navigate(NavRoute.DetailCourseVideoScreen.route + "/$courseId")
+            }
+        }
+    }
+}
+
+fun addDetailCourseVideoScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+    navGraphBuilder.composable(
+        route = NavRoute.DetailCourseVideoScreen.route + "/{courseId}",
+        arguments = listOf(
+            navArgument(name = "courseId") {
+                type = NavType.IntType
+            }
+        )
+    ){navBackStackEntry -> 
+        navBackStackEntry.arguments?.let {
+            val courseId = it.getInt("courseId")
+            CourseDetailVideoScreen(courseId = courseId)
         }
     }
 }
