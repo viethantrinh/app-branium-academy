@@ -56,7 +56,7 @@ import net.branium.viewmodel.CourseViewModel
 import net.branium.viewmodel.HomeViewModel
 
 @Composable
-fun CourseDetailScreen(courseId: Int, homeViewModel: HomeViewModel, onNavigateToCourseVideoScreen: (Int) -> Unit) {
+fun CourseDetailScreen(courseId: Int, homeViewModel: HomeViewModel, onNavigateToCourseVideoScreen: (Int) -> Unit ) {
     val context = LocalContext.current
     val courseViewModel: CourseViewModel = hiltViewModel()
     LaunchedEffect(courseId) {
@@ -73,7 +73,7 @@ fun CourseDetailScreen(courseId: Int, homeViewModel: HomeViewModel, onNavigateTo
             is ApiResponseState.Succeeded -> {
                 val courseDetail = courseViewModel.courseDetail.value
                 CourseIntroduce(courseDetail = courseDetail)
-                OptionScreen(courseDetail = courseDetail){courseId ->
+                OptionScreen(courseDetail = courseDetail, homeViewModel){courseId ->
                     onNavigateToCourseVideoScreen(courseId)
                 }
                 Spacer(modifier = Modifier.height(32.dp))
@@ -140,7 +140,7 @@ fun CourseIntroduce(courseDetail: CourseDetailResponse) {
 }
 
 @Composable
-fun OptionScreen(courseDetail: CourseDetailResponse, onNavigateToCourseVideoScreen: (Int) -> Unit) {
+fun OptionScreen(courseDetail: CourseDetailResponse, homeViewModel: HomeViewModel, onNavigateToCourseVideoScreen: (Int) -> Unit) {
     val option = getOptionCourseDetail(courseDetail.paid, courseDetail.enrolled)
     when (option) {
         OptionCourseDetailScreen.LearnNowOption.option -> {
@@ -150,7 +150,7 @@ fun OptionScreen(courseDetail: CourseDetailResponse, onNavigateToCourseVideoScre
             EnrollOptionCourseScreen(courseDetail = courseDetail)
         }
         OptionCourseDetailScreen.BuyNowOption.option ->{
-            BuyNowOptionCourseScreen(courseDetail = courseDetail)
+            BuyNowOptionCourseScreen(courseDetail = courseDetail, homeViewModel)
         }
         else -> {
             Unit

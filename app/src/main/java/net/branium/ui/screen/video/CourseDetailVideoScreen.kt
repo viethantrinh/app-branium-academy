@@ -45,7 +45,7 @@ import net.branium.viewmodel.VideoPlayerViewModel
 
 
 @Composable
-fun CourseDetailVideoScreen(courseId: Int) {
+fun CourseDetailVideoScreen(courseId: Int, onNavigationToExam: (Int) -> Unit) {
     val courseDetailViewModel: CourseViewModel = hiltViewModel()
     val viewModel: VideoPlayerViewModel = viewModel()
     LaunchedEffect(courseId) {
@@ -57,7 +57,11 @@ fun CourseDetailVideoScreen(courseId: Int) {
         var isPlaying by remember {
             mutableStateOf(false)
         }
-        var url by remember { mutableStateOf(sections.firstOrNull()?.lectures?.firstOrNull()?.resource ?: "") }
+        var url by remember {
+            mutableStateOf(
+                sections.firstOrNull()?.lectures?.firstOrNull()?.resource ?: ""
+            )
+        }
         Log.d("TAG", "CourseDetailVideoScreen: $url")
         val context = LocalContext.current
 
@@ -69,13 +73,22 @@ fun CourseDetailVideoScreen(courseId: Int) {
                     isPlaying = isVideoPlaying
                 })
 
-            Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp  ) ){
-                Text(text = courseDetail.title,
+            Column(
+                modifier = Modifier.padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = 16.dp,
+                    bottom = 16.dp
+                )
+            ) {
+                Text(
+                    text = courseDetail.title,
                     fontSize = 14.sp,
                     fontWeight = FontWeight(600)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Trinh Han",
+                Text(
+                    text = "Trinh Han",
                     fontSize = 10.sp,
                     fontWeight = FontWeight(400)
                 )
@@ -104,41 +117,43 @@ fun CourseDetailVideoScreen(courseId: Int) {
                     }
                     if (expandedSections[index]) {
                         sections[index].lectures.forEach { lecture ->
-                            LectureVideoItem(lecture = lecture) {
-                                if (it != url) {
+                            LectureVideoItem(lecture = lecture,
+                                onClickPlayVideo = {
+                                    if (it != url) {
+                                        isPlaying = false
+                                        url = it
+                                        Log.d("TAG", "CourseDetailVideoScreen: $url")
+                                    } else {
+                                        Log.d("TAG", "Ko thay doi")
+                                    }
+                                },
+                                onNavigationToExam = {lectureId ->
                                     isPlaying = false
-                                    url = it
-                                    Log.d("TAG", "CourseDetailVideoScreen: $url")
-                                }else{
-                                    Log.d("TAG", "Ko thay doi")
-                                }
-
-                            }
-                            Divider(
-                                color = Color.Gray,
-                                thickness = 0.5.dp,
-                                modifier = Modifier
-                                    .padding(vertical = 8.dp)
-                                    .wrapContentWidth()
-                            )
+                                    onNavigationToExam(lectureId)
+                                })
                         }
+                        Divider(
+                            color = Color.Gray,
+                            thickness = 0.5.dp,
+                            modifier = Modifier
+                                .padding(vertical = 8.dp)
+                                .wrapContentWidth()
+                        )
                     }
                 }
             }
+        }
 
-            LaunchedEffect(key1 = url) {
-                isPlaying = true
-                viewModel.apply {
-                    releasePlayer()
-                    initializePlayer(context)
-                    playVideo(url)
-                }
+        LaunchedEffect(key1 = url) {
+            isPlaying = true
+            viewModel.apply {
+                releasePlayer()
+                initializePlayer(context)
+                playVideo(url)
             }
         }
     }
-
 }
-
 
 
 @Composable
@@ -164,12 +179,22 @@ fun SectionHeader(section: Section, isExpanded: Boolean, onSectionClick: () -> U
 }
 
 @Composable
-fun LectureVideoItem(lecture: Lecture, onClick: (String) -> Unit) {
+fun LectureVideoItem(
+    lecture: Lecture,
+    onClickPlayVideo: (String) -> Unit,
+    onNavigationToExam: (Int) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .clickable { onClick(lecture.resource) },
+            .clickable {
+                if (lecture.type == "video") {
+                    onClickPlayVideo(lecture.resource)
+                } else if (lecture.type == "quiz") {
+                    onNavigationToExam(lecture.id) // sau thay lecture resource
+                }
+            },
     )
     {
         Row(
@@ -214,6 +239,6 @@ fun LectureVideoItem(lecture: Lecture, onClick: (String) -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailVideoScreenPreview() {
-    CourseDetailVideoScreen(1)
+    CourseDetailVideoScreen(1, {})
 }
 

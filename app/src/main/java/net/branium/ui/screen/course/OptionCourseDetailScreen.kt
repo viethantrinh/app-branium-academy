@@ -46,7 +46,7 @@ import net.branium.viewmodel.ResponseState
 import net.branium.viewmodel.WishlistViewModel
 
 @Composable
-fun BuyNowOptionCourseScreen(courseDetail: CourseDetailResponse) {
+fun BuyNowOptionCourseScreen(courseDetail: CourseDetailResponse, homeViewModel: HomeViewModel) {
     val wishlistViewModel: WishlistViewModel = hiltViewModel()
     var isInWishList by remember { mutableStateOf(courseDetail.inWishList) }
     var userTriggeredUpdate by remember { mutableStateOf(false) }
@@ -55,8 +55,6 @@ fun BuyNowOptionCourseScreen(courseDetail: CourseDetailResponse) {
     val cartViewModel: CartViewModel = hiltViewModel()
     var isInCart by remember { mutableStateOf(courseDetail.inCart) }
     var userTriggeredCartUpdate by remember { mutableStateOf(false) }
-
-    val homeViewModel: HomeViewModel = hiltViewModel()
 
     // Theo dõi sự thay đổi của courseDetail
     LaunchedEffect(courseDetail) {

@@ -44,6 +44,9 @@ class RetrofitHelper @Inject constructor(private val authInterceptor: AuthInterc
         val client = OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
+            .connectTimeout(30, TimeUnit.SECONDS) // Thời gian chờ kết nối
+            .readTimeout(30, TimeUnit.SECONDS)    // Thời gian chờ đọc dữ liệu
+            .writeTimeout(30, TimeUnit.SECONDS)   // Thời gian chờ ghi dữ liệu
             .build()
 
         val retrofitInstance = Retrofit.Builder()

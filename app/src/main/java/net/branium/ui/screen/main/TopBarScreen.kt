@@ -39,12 +39,15 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import net.branium.R
 import net.branium.di.CartQuantityManager
 import net.branium.ui.navigation.NavRoute
+import net.branium.ui.screen.search.SearchBarCourse
 import net.branium.viewmodel.HomeViewModel
+import net.branium.viewmodel.SearchViewModel
 
 @Composable
 fun TopBarScreen(
     navController: NavController,
     homeViewModel: HomeViewModel,
+    searchViewModel: SearchViewModel,
     onNavigateToCartScreen: () -> Unit
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -70,7 +73,9 @@ fun TopBarScreen(
         NavRoute.BottomScreen.Search.bRoute -> {
             TopBar(
                 title = {
-                    /* TODO: Search Screen sẽ có top bar là một thanh tìm kiếm */
+                    SearchBarCourse(
+                        searchViewModel = searchViewModel
+                    )
                 },
                 showCartQuantityScreen = true,
                 onNavigateToCartScreen = onNavigateToCartScreen,
@@ -180,7 +185,7 @@ fun TopBarScreen(
             )
         }
 
-        NavRoute.HomeScreen.DetailCategory.route + "/{categoryId}/{categoryName}"-> {
+        NavRoute.HomeScreen.DetailCategory.route + "/{categoryId}/{categoryName}" -> {
             TopBar(
                 title = {
                     Row(
@@ -212,7 +217,8 @@ fun TopBarScreen(
 
             )
         }
-        NavRoute.DetailCourseScreen.route + "/{courseId}"-> {
+
+        NavRoute.DetailCourseScreen.route + "/{courseId}" -> {
             TopBar(
                 title = {
                     Row(
@@ -234,6 +240,33 @@ fun TopBarScreen(
                     }
                 },
                 showCartQuantityScreen = true,
+                onNavigateToCartScreen = onNavigateToCartScreen,
+                homeViewModel = homeViewModel
+            )
+        }
+
+        NavRoute.ExamScreen.route + "/{lectureId}" -> {
+            TopBar(
+                title = {
+                    Row(
+                        horizontalArrangement = Arrangement.Absolute.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            onClick = {
+                                navController.navigateUp()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowLeft,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(32.dp)
+                            )
+                        }
+                    }
+                },
+                showCartQuantityScreen = false,
                 onNavigateToCartScreen = onNavigateToCartScreen,
                 homeViewModel = homeViewModel
             )
