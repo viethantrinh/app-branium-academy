@@ -20,13 +20,17 @@ import net.branium.ui.screen.account.AccountScreen
 import net.branium.ui.screen.course.CourseDetailScreen
 import net.branium.ui.screen.course.CourseScreen
 import net.branium.ui.screen.category.CoursesOfCategory
+import net.branium.ui.screen.exam.ExamResultScreen
+import net.branium.ui.screen.exam.ExamScreen
 import net.branium.ui.screen.video.CourseDetailVideoScreen
 import net.branium.ui.screen.home.HomeScreen
 import net.branium.ui.screen.payment.CartScreen
 import net.branium.ui.screen.payment.CheckoutScreen
 import net.branium.ui.screen.search.SearchScreen
 import net.branium.ui.screen.wishlist.WishlistScreen
+import net.branium.viewmodel.ExamViewmodel
 import net.branium.viewmodel.HomeViewModel
+import net.branium.viewmodel.SearchViewModel
 
 @Composable
 fun MainScreen() {
@@ -34,11 +38,14 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     val homeViewModel: HomeViewModel = hiltViewModel()
+    val searchViewModel: SearchViewModel = hiltViewModel()
+    val examViewmodel: ExamViewmodel = hiltViewModel()
     Scaffold(
         topBar = {
             TopBarScreen(
                 navController = navController,
                 homeViewModel = homeViewModel,
+                searchViewModel = searchViewModel,
                 onNavigateToCartScreen = {
                     navController.navigate(NavRoute.CartScreen.route)
                 }
@@ -54,7 +61,7 @@ fun MainScreen() {
             modifier = Modifier.padding(it)
         ) {
             addHomeScreen(navController, this)
-            addSearchScreen(navController, this)
+            addSearchScreen(navController, this, searchViewModel)
             addCourseScreen(navController, this)
             addWishlistScreen(navController, this)
             addAccountScreen(navController, this)
@@ -63,6 +70,8 @@ fun MainScreen() {
             addDetailCategoryScreen(navController, this)
             addDetailCourseScreen(navController, homeViewModel, this)
             addDetailCourseVideoScreen(navController, this)
+            addExamScreen(navController, this, examViewmodel)
+            addExamResultScreen(navController, this, examViewmodel)
         }
     }
 }
@@ -83,11 +92,24 @@ fun addHomeScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
     }
 }
 
-fun addSearchScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+fun addSearchScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    searchViewModel: SearchViewModel
+) {
     navGraphBuilder.composable(
         route = NavRoute.BottomScreen.Search.bRoute
     ) {
-        SearchScreen()
+        SearchScreen(
+            searchViewModel = searchViewModel,
+            navigationToCoursesOfCategory = { categoryId, categoryName ->
+                navController.navigate(NavRoute.HomeScreen.DetailCategory.hRoute + "/$categoryId/$categoryName")
+            },
+            onNavigateToDetailCourse = { courseId ->
+                navController.navigate(NavRoute.DetailCourseScreen.route + "/$courseId")
+            }
+        )
+
     }
 }
 
@@ -208,7 +230,7 @@ fun addDetailCourseScreen(
     ) { backStackEntry ->
         backStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
-            CourseDetailScreen(courseId = courseId, homeViewModel= homeViewModel) {
+            CourseDetailScreen(courseId = courseId, homeViewModel = homeViewModel) {
                 navController.navigate(NavRoute.DetailCourseVideoScreen.route + "/$courseId")
             }
         }
@@ -226,7 +248,39 @@ fun addDetailCourseVideoScreen(navController: NavController, navGraphBuilder: Na
     ) { navBackStackEntry ->
         navBackStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
-            CourseDetailVideoScreen(courseId = courseId)
+            CourseDetailVideoScreen(courseId = courseId) { lectureId ->
+                navController.navigate(NavRoute.ExamScreen.route + "/$lectureId")
+            }
         }
+    }
+}
+
+fun addExamScreen(navController: NavController, navGraphBuilder: NavGraphBuilder, examViewmodel: ExamViewmodel) {
+    navGraphBuilder.composable(
+        route = NavRoute.ExamScreen.route + "/{lectureId}",
+        arguments = listOf(
+            navArgument(name = "lectureId") {
+                type = NavType.IntType
+            }
+        )
+    ) { navBackStackEntry ->
+        navBackStackEntry.arguments?.let {
+            val lectureId = it.getInt("lectureId")
+            ExamScreen(lectureId, examViewmodel) {
+                navController.navigate(NavRoute.ExamResultScreen.route)
+            }
+        }
+    }
+}
+
+fun addExamResultScreen(navController: NavController, navGraphBuilder: NavGraphBuilder, examViewmodel: ExamViewmodel) {
+    navGraphBuilder.composable(
+        route = NavRoute.ExamResultScreen.route
+    ) {
+        ExamResultScreen(
+            examViewmodel = examViewmodel,
+            onNavigateToCourse = {
+            navController.navigate(NavRoute.BottomScreen.Course.route)
+        })
     }
 }

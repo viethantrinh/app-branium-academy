@@ -36,6 +36,8 @@ sealed class NavRoute(val route: String) {
     object CheckoutScreen: NavRoute("checkout_screen")
     object DetailCourseScreen: NavRoute("detail_course_screen")
     object DetailCourseVideoScreen: NavRoute("detail_course_video_screen")
+    object ExamScreen: NavRoute("exam_screen")
+    object ExamResultScreen: NavRoute("exam_result_screen")
 }
 
 val navRouteBottom = listOf(
