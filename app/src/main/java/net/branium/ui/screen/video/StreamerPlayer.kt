@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 import net.branium.R
 import net.branium.viewmodel.VideoPlayerViewModel
 
@@ -22,7 +23,8 @@ import net.branium.viewmodel.VideoPlayerViewModel
 fun StreamerPlayer(
     viewModel: VideoPlayerViewModel,
     isPlaying: Boolean,
-    onPlayerClosed: (isVideoPlaying: Boolean) -> Unit
+    onPlayerClosed: (isVideoPlaying: Boolean) -> Unit,
+    navController: NavController
 ) {
     Box(
         modifier = Modifier
@@ -40,6 +42,9 @@ fun StreamerPlayer(
                 onClick = {
                     onPlayerClosed(false)
                     viewModel.releasePlayer()
+                    //navigationToSourceDetail
+                    navController.popBackStack()
+
                 }, modifier = Modifier.align(
                     Alignment.TopEnd
                 )

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -38,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import net.branium.data.model.dto.response.course.Lecture
 import net.branium.data.model.dto.response.course.Section
 import net.branium.viewmodel.CourseViewModel
@@ -45,7 +47,11 @@ import net.branium.viewmodel.VideoPlayerViewModel
 
 
 @Composable
-fun CourseDetailVideoScreen(courseId: Int, onNavigationToExam: (Int) -> Unit) {
+fun CourseDetailVideoScreen(
+    courseId: Int,
+    navController: NavController,
+    onNavigationToExam: (Int) -> Unit
+) {
     val courseDetailViewModel: CourseViewModel = hiltViewModel()
     val viewModel: VideoPlayerViewModel = viewModel()
     LaunchedEffect(courseId) {
@@ -62,6 +68,12 @@ fun CourseDetailVideoScreen(courseId: Int, onNavigationToExam: (Int) -> Unit) {
                 sections.firstOrNull()?.lectures?.firstOrNull()?.resource ?: ""
             )
         }
+
+        var stateLectureId by remember {
+            mutableStateOf(-1)
+        }
+
+
         Log.d("TAG", "CourseDetailVideoScreen: $url")
         val context = LocalContext.current
 
@@ -71,28 +83,38 @@ fun CourseDetailVideoScreen(courseId: Int, onNavigationToExam: (Int) -> Unit) {
                 isPlaying = isPlaying,
                 onPlayerClosed = { isVideoPlaying ->
                     isPlaying = isVideoPlaying
-                })
+                },
+                navController = navController
+
+            )
 
             Column(
                 modifier = Modifier.padding(
                     start = 16.dp,
                     end = 16.dp,
                     top = 16.dp,
-                    bottom = 16.dp
+                    bottom = 4.dp
                 )
             ) {
                 Text(
                     text = courseDetail.title,
-                    fontSize = 14.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight(600)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = "Trinh Han",
-                    fontSize = 10.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight(400)
                 )
             }
+            Divider(
+                color = Color.Gray,
+                thickness = 0.5.dp,
+                modifier = Modifier
+                    .padding(vertical = 8.dp)
+                    .wrapContentWidth()
+            )
 
             // Danh sách trạng thái cho mỗi section
             val expandedSections =
@@ -101,8 +123,6 @@ fun CourseDetailVideoScreen(courseId: Int, onNavigationToExam: (Int) -> Unit) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(max = 400.dp)
-                    .wrapContentHeight()
                     .padding(start = 16.dp, end = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -115,36 +135,41 @@ fun CourseDetailVideoScreen(courseId: Int, onNavigationToExam: (Int) -> Unit) {
                         // Chuyển đổi trạng thái mở/đóng
                         expandedSections[index] = !expandedSections[index]
                     }
+
                     if (expandedSections[index]) {
                         sections[index].lectures.forEach { lecture ->
                             LectureVideoItem(lecture = lecture,
-                                onClickPlayVideo = {
-                                    if (it != url) {
-                                        isPlaying = false
-                                        url = it
-                                        Log.d("TAG", "CourseDetailVideoScreen: $url")
-                                    } else {
-                                        Log.d("TAG", "Ko thay doi")
-                                    }
+                                onClickPlayVideo = { lectureId, lectureUrl ->
+//                                    if (it != url) {
+//                                        isPlaying = false
+//                                        url = it
+//                                        Log.d("TAG", "CourseDetailVideoScreen: $url")
+//                                    } else {
+//                                        Log.d("TAG", "Ko thay doi")
+//                                    }
+                                    stateLectureId = lectureId
+                                    url = lectureUrl
+                                    isPlaying = false
                                 },
-                                onNavigationToExam = {lectureId ->
+                                onNavigationToExam = { lectureId ->
                                     isPlaying = false
                                     onNavigationToExam(lectureId)
                                 })
+                            Divider(
+                                color = Color.Gray,
+                                thickness = 0.5.dp,
+                                modifier = Modifier
+                                    .padding(vertical = 8.dp)
+                                    .padding(start = 16.dp, end = 16.dp)
+                            )
                         }
-                        Divider(
-                            color = Color.Gray,
-                            thickness = 0.5.dp,
-                            modifier = Modifier
-                                .padding(vertical = 8.dp)
-                                .wrapContentWidth()
-                        )
+
                     }
                 }
             }
         }
 
-        LaunchedEffect(key1 = url) {
+        LaunchedEffect(key1 = stateLectureId) {
             isPlaying = true
             viewModel.apply {
                 releasePlayer()
@@ -167,21 +192,21 @@ fun SectionHeader(section: Section, isExpanded: Boolean, onSectionClick: () -> U
     ) {
 
         Text(
-            text = "Section ${section.order}: ${section.title}",
-            fontSize = 10.sp,
-            fontWeight = FontWeight(400),
-            maxLines = 1,
+            text = "${section.title}",
+            fontSize = 14.sp,
+            fontWeight = FontWeight(600),
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis
 
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
 @Composable
 fun LectureVideoItem(
     lecture: Lecture,
-    onClickPlayVideo: (String) -> Unit,
+    onClickPlayVideo: (Int, String) -> Unit,
     onNavigationToExam: (Int) -> Unit
 ) {
     Box(
@@ -190,7 +215,7 @@ fun LectureVideoItem(
             .wrapContentHeight()
             .clickable {
                 if (lecture.type == "video") {
-                    onClickPlayVideo(lecture.resource)
+                    onClickPlayVideo(lecture.id, lecture.resource)
                 } else if (lecture.type == "quiz") {
                     onNavigationToExam(lecture.id) // sau thay lecture resource
                 }
@@ -235,10 +260,4 @@ fun LectureVideoItem(
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun CourseDetailVideoScreenPreview() {
-    CourseDetailVideoScreen(1, {})
-}
 

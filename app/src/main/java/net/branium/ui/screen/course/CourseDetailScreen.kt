@@ -41,6 +41,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +55,7 @@ import net.branium.util.splitDescription
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CourseViewModel
 import net.branium.viewmodel.HomeViewModel
+import java.time.LocalDate
 
 @Composable
 fun CourseDetailScreen(courseId: Int, homeViewModel: HomeViewModel, onNavigateToCourseVideoScreen: (Int) -> Unit ) {
@@ -182,10 +184,9 @@ fun WillLearnScreen(courseDetail: CourseDetailResponse) {
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = description, fontSize = 12.sp, fontWeight = FontWeight(400))
-                    Spacer(modifier = Modifier.height(4.dp))
-
+                    Text(text = description, fontSize = 12.sp, fontWeight = FontWeight(400), lineHeight = 20.sp)
                 }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -263,7 +264,7 @@ fun SectionHeader(section: Section, isExpanded: Boolean, onSectionClick: () -> U
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Section ${section.order}: ${section.title}",
+            text = "${section.title}",
             fontSize = 14.sp,
             fontWeight = FontWeight(600),
             maxLines = 2,
@@ -271,16 +272,23 @@ fun SectionHeader(section: Section, isExpanded: Boolean, onSectionClick: () -> U
 
         )
         Spacer(modifier = Modifier.width(4.dp))
-        Icon(
-            modifier = Modifier.size(20.dp),
-            imageVector = (if (isExpanded) {
-                ImageVector.vectorResource(id = R.drawable.icon_arrow_down_24)
-            } else {
-                ImageVector.vectorResource(id = R.drawable.icon_arrow_up_24)
-            }),
-            contentDescription = null
-        )
+        Box(
+            modifier = Modifier.fillMaxWidth().weight(1f)
 
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .align(Alignment.CenterEnd),
+                imageVector = (if (isExpanded) {
+                    ImageVector.vectorResource(id = R.drawable.icon_arrow_down_24)
+                } else {
+                    ImageVector.vectorResource(id = R.drawable.icon_arrow_up_24)
+                }),
+                contentDescription = null
+            )
+        }
+        Spacer(modifier = Modifier.height(32.dp))
 
     }
 }
@@ -338,7 +346,7 @@ val fakeCourseDetail = CourseDetailResponse(
     fullDescription = "Khóa học được lồng ghép các yêu cầu nâng cao vào các bài học để bạn có thể đáp ứng được yêu cầu của nhà tuyển dụng ngày càng tăng#Sau khi kết thúc khóa học bạn có thể tự tin đi thực tập, intern, fresher vị trí Mobile App Developer với Flutter#Khóa học sẽ được cập nhật, thay đổi nội dung mới nhất mà không có thông báo trước",
     price = 399000.00,
     discountPrice = 349000.00,
-    updatedAt = "2024-10-23",
+    updatedAt = "12/11/2024",
     totalStudents = 200,
     totalSections = 5,
     totalLectures = 36,

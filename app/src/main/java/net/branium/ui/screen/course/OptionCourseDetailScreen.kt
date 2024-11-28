@@ -1,5 +1,6 @@
 package net.branium.ui.screen.course
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -39,6 +40,7 @@ import net.branium.data.model.dto.response.course.CourseDetailResponse
 import net.branium.data.model.dto.response.course.Lecture
 import net.branium.data.model.dto.response.course.Section
 import net.branium.util.formatToVND
+import net.branium.util.getDay
 import net.branium.viewmodel.ApiResponseState
 import net.branium.viewmodel.CartViewModel
 import net.branium.viewmodel.HomeViewModel
@@ -346,20 +348,21 @@ fun LearnNowOptionCourseScreen(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp),
+//                .height(52.dp),
 
             ) {
             Row(
                 modifier = Modifier.height(20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Creator: ", fontSize = 12.sp)
+                Text(text = "Creator: ", fontSize = 16.sp)
                 Text(
                     text = "Trinh Han",
-                    fontSize = 12.sp,
+                    fontSize = 16.sp,
                     color = colorResource(id = R.color.primary)
                 )
             }
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 modifier = Modifier
                     .height(16.dp)
@@ -373,10 +376,11 @@ fun LearnNowOptionCourseScreen(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "last updated: ${courseDetail.updatedAt}",
-                    fontSize = 8.sp,
+                    text = "last updated: ${getDay(courseDetail.updatedAt)}",
+                    fontSize = 12.sp,
                 )
             }
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier
                     .height(16.dp)
@@ -391,7 +395,7 @@ fun LearnNowOptionCourseScreen(
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = "Language: Vietnamese",
-                    fontSize = 8.sp,
+                    fontSize = 12.sp,
                 )
             }
         }

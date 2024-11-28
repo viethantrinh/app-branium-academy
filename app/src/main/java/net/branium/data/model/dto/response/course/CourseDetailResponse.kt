@@ -1,5 +1,8 @@
 package net.branium.data.model.dto.response.course
 
+import java.time.LocalDate
+import java.time.LocalTime
+
 data class CourseDetailResponse(
     val id: Int = 0,
     val title: String = "",
@@ -8,7 +11,7 @@ data class CourseDetailResponse(
     val fullDescription: String = "",
     val price: Double = 0.0,
     val discountPrice: Double = 0.0,
-    val updatedAt: String = "",
+    val updatedAt: String="",
     val totalStudents: Int = 0,
     val totalSections: Int = 0,
     val totalLectures: Int = 0,

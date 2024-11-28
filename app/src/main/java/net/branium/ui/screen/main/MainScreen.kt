@@ -265,7 +265,7 @@ fun addDetailCourseVideoScreen(navController: NavController, navGraphBuilder: Na
     ) { navBackStackEntry ->
         navBackStackEntry.arguments?.let {
             val courseId = it.getInt("courseId")
-            CourseDetailVideoScreen(courseId = courseId) { lectureId ->
+            CourseDetailVideoScreen(courseId = courseId, navController = navController) { lectureId ->
                 navController.navigate(NavRoute.ExamScreen.route + "/$lectureId")
             }
         }
