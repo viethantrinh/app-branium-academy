@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import net.branium.data.model.dto.response.payment.OrderResponse
 import net.branium.ui.navigation.NavRoute
 import net.branium.ui.screen.account.AccountScreen
+import net.branium.ui.screen.account.UpdateUserInfoScreen
 import net.branium.ui.screen.course.CourseDetailScreen
 import net.branium.ui.screen.course.CourseScreen
 import net.branium.ui.screen.category.CoursesOfCategory
@@ -31,6 +32,7 @@ import net.branium.ui.screen.wishlist.WishlistScreen
 import net.branium.viewmodel.ExamViewmodel
 import net.branium.viewmodel.HomeViewModel
 import net.branium.viewmodel.SearchViewModel
+import net.branium.viewmodel.UserViewModel
 
 @Composable
 fun MainScreen() {
@@ -40,6 +42,7 @@ fun MainScreen() {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val searchViewModel: SearchViewModel = hiltViewModel()
     val examViewmodel: ExamViewmodel = hiltViewModel()
+    val userViewModel: UserViewModel = hiltViewModel()
     Scaffold(
         topBar = {
             TopBarScreen(
@@ -64,7 +67,7 @@ fun MainScreen() {
             addSearchScreen(navController, this, searchViewModel)
             addCourseScreen(navController, this)
             addWishlistScreen(navController, this)
-            addAccountScreen(navController, this)
+            addAccountScreen(navController, this, userViewModel)
             addCartScreen(navController, this, homeViewModel)
             addCheckout(navController, this, homeViewModel)
             addDetailCategoryScreen(navController, this)
@@ -72,6 +75,7 @@ fun MainScreen() {
             addDetailCourseVideoScreen(navController, this)
             addExamScreen(navController, this, examViewmodel)
             addExamResultScreen(navController, this, examViewmodel)
+            addUpdateInfoScreen(navController, this, userViewModel)
         }
     }
 }
@@ -135,11 +139,24 @@ fun addWishlistScreen(navController: NavController, navGraphBuilder: NavGraphBui
     }
 }
 
-fun addAccountScreen(navController: NavController, navGraphBuilder: NavGraphBuilder) {
+fun addAccountScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    userViewModel: UserViewModel
+) {
     navGraphBuilder.composable(
         route = NavRoute.BottomScreen.Account.bRoute
     ) {
-        AccountScreen()
+        AccountScreen(
+            userViewModel = userViewModel,
+            {},
+            onNavigationToUpdateInfo = {
+                navController.navigate(NavRoute.UpdateUserInfoScreen.route)
+            },
+            {},
+            onNavigationToCart = {
+                navController.navigate(NavRoute.CartScreen.route)
+            })
     }
 }
 
@@ -255,7 +272,11 @@ fun addDetailCourseVideoScreen(navController: NavController, navGraphBuilder: Na
     }
 }
 
-fun addExamScreen(navController: NavController, navGraphBuilder: NavGraphBuilder, examViewmodel: ExamViewmodel) {
+fun addExamScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    examViewmodel: ExamViewmodel
+) {
     navGraphBuilder.composable(
         route = NavRoute.ExamScreen.route + "/{lectureId}",
         arguments = listOf(
@@ -273,14 +294,34 @@ fun addExamScreen(navController: NavController, navGraphBuilder: NavGraphBuilder
     }
 }
 
-fun addExamResultScreen(navController: NavController, navGraphBuilder: NavGraphBuilder, examViewmodel: ExamViewmodel) {
+fun addExamResultScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    examViewmodel: ExamViewmodel
+) {
     navGraphBuilder.composable(
         route = NavRoute.ExamResultScreen.route
     ) {
         ExamResultScreen(
             examViewmodel = examViewmodel,
             onNavigateToCourse = {
-            navController.navigate(NavRoute.BottomScreen.Course.route)
-        })
+                navController.navigate(NavRoute.BottomScreen.Course.route)
+            })
+    }
+}
+
+fun addUpdateInfoScreen(
+    navController: NavController,
+    navGraphBuilder: NavGraphBuilder,
+    userViewModel: UserViewModel
+) {
+    navGraphBuilder.composable(
+        route = NavRoute.UpdateUserInfoScreen.route
+    ) {
+        UpdateUserInfoScreen(userViewModel = userViewModel,
+            navController = navController,
+            onUpdateSuccess = {
+                navController.navigate(NavRoute.BottomScreen.Account.route)
+            })
     }
 }

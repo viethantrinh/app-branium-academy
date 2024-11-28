@@ -57,6 +57,7 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     // ui
     implementation("androidx.compose.ui:ui:1.7.4")
     implementation("androidx.compose.material:material:1.7.4")

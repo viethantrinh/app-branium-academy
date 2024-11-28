@@ -25,7 +25,7 @@ class UserViewModel @Inject constructor(
 
     fun getUserInfo(){
         viewModelScope.launch {
-            when(val response = userRepository.getStudentInfo()){
+            when (val response = userRepository.getStudentInfo()) {
                 is ResultResponse.Success -> {
                     _userInfo.value = response.data ?: UserInfoResponse()
                 }
@@ -43,7 +43,8 @@ class UserViewModel @Inject constructor(
         viewModelScope.launch {
             when(val response = userRepository.updateStudentInfo(userInfoRequest)){
                 is ResultResponse.Success -> {
-                    _userInfo.value = response.data ?: UserInfoResponse()
+//                    _userInfo.value = response.data ?: UserInfoResponse()
+                    getUserInfo()
                 }
 
                 is ResultResponse.Error -> {
