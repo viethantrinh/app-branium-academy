@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -33,13 +35,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import net.branium.R
 import net.branium.data.model.dto.response.course.Lecture
 import net.branium.data.model.dto.response.course.Section
 import net.branium.viewmodel.CourseViewModel
@@ -108,13 +113,7 @@ fun CourseDetailVideoScreen(
                     fontWeight = FontWeight(400)
                 )
             }
-            Divider(
-                color = Color.Gray,
-                thickness = 0.5.dp,
-                modifier = Modifier
-                    .padding(vertical = 8.dp)
-                    .wrapContentWidth()
-            )
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Danh sách trạng thái cho mỗi section
             val expandedSections =
@@ -140,13 +139,6 @@ fun CourseDetailVideoScreen(
                         sections[index].lectures.forEach { lecture ->
                             LectureVideoItem(lecture = lecture,
                                 onClickPlayVideo = { lectureId, lectureUrl ->
-//                                    if (it != url) {
-//                                        isPlaying = false
-//                                        url = it
-//                                        Log.d("TAG", "CourseDetailVideoScreen: $url")
-//                                    } else {
-//                                        Log.d("TAG", "Ko thay doi")
-//                                    }
                                     stateLectureId = lectureId
                                     url = lectureUrl
                                     isPlaying = false
@@ -199,7 +191,24 @@ fun SectionHeader(section: Section, isExpanded: Boolean, onSectionClick: () -> U
             overflow = TextOverflow.Ellipsis
 
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.width(4.dp))
+        Box(
+            modifier = Modifier.fillMaxWidth().weight(1f)
+
+        ) {
+            Icon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .align(Alignment.CenterEnd),
+                imageVector = (if (isExpanded) {
+                    ImageVector.vectorResource(id = R.drawable.icon_arrow_down_24)
+                } else {
+                    ImageVector.vectorResource(id = R.drawable.icon_arrow_up_24)
+                }),
+                contentDescription = null
+            )
+        }
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
