@@ -376,7 +376,7 @@ fun LearnNowOptionCourseScreen(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "last updated: ${getDay(courseDetail.updatedAt)}",
+                    text = "last updated: ${courseDetail.updatedAt}",
                     fontSize = 12.sp,
                 )
             }

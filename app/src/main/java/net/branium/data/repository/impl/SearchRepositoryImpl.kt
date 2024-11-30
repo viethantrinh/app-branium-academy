@@ -17,24 +17,42 @@ class SearchRepositoryImpl
             retrofitInstance.create(SearchApiService::class.java)
         }
 
-    override suspend fun getInfoByKeyword(query: String): ResultResponse<SearchResponse> {
-        return withContext(Dispatchers.IO){
-            val response = searchApiService.getInfoByKeyword(query)
-            if (response.isSuccessful){
-                val apiResponse = response.body()
-                if (apiResponse != null){
-                    if (apiResponse.code == 1000){
-                        ResultResponse.Success(apiResponse.result)
-                    }else{
-                        ResultResponse.Error(Exception(apiResponse.message))
+    override suspend fun getInfoByKeyword(
+        keyword: String,
+        page: Int?,
+        size: Int?,
+        sort: String?,
+        category: String?
+    ): ResultResponse<SearchResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                // Gọi API
+                val response = searchApiService.searchCourses(
+                    keyword = keyword,
+                    page = page,
+                    size = size,
+                    sort = sort,
+                    category = category
+                )
+
+                // Xử lý phản hồi
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    if (apiResponse != null) {
+                        if (apiResponse.code == 1000) {
+                            ResultResponse.Success(apiResponse.result)
+                        } else {
+                            ResultResponse.Error(Exception(apiResponse.message))
+                        }
+                    } else {
+                        ResultResponse.Error(Exception("Response body is null"))
                     }
-                }else{
-                    ResultResponse.Error(Exception("Response body is null"))
+                } else {
+                    ResultResponse.Error(Exception("Something went wrong: ${response.message()}"))
                 }
-            }else{
-                ResultResponse.Error(Exception("Something went wrong"))
+            } catch (e: Exception) {
+                ResultResponse.Error(e)
             }
         }
     }
-
 }

@@ -1,5 +1,6 @@
 package net.branium.ui.screen.search
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,9 +29,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -39,6 +44,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import net.branium.R
 import net.branium.data.model.dto.response.home.Category
+import net.branium.data.model.dto.response.search.SearchResponse
 import net.branium.viewmodel.HomeViewModel
 import net.branium.viewmodel.SearchViewModel
 
@@ -50,8 +56,9 @@ fun SearchScreen(
 ) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val categories = homeViewModel.categories.value
-    val searchResult = searchViewModel.coursesSearch
+    val searchResult by searchViewModel.searchResponse.collectAsState()
 
+    val searchText by searchViewModel.searchText.collectAsState()
     val isSearching by searchViewModel.isSearching.collectAsState()
     val isFocused by searchViewModel.isFocused.collectAsState()
 
@@ -79,20 +86,18 @@ fun SearchScreen(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-            }else{
+            } else {
                 //search result
-                LazyColumn(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                   items(searchResult.value) { course ->
-                       SearchItemScreen(course = course) {courseId ->
-                           onNavigateToDetailCourse(courseId)
-                       }
-                   }
-                }
+                SearchResultScreen(
+                    searchResponse = searchResult,
+                    onClick = { pageNumber, pageSize ->
+                        searchViewModel.pagingCourses(searchText, pageNumber, pageSize)
+                        Log.d("SearchScreen", "onClick: $searchResult")
+                    },
+                    onNavigateToDetailCourse = onNavigateToDetailCourse
+                )
             }
-        }else{
+        } else {
             ListCategories(
                 categories = categories,
                 navigationToCoursesOfCategory = navigationToCoursesOfCategory
@@ -109,6 +114,78 @@ fun SearchScreen(
         }
     }
 
+}
+
+@Composable
+fun SearchResultScreen(
+    searchResponse: SearchResponse,
+    onClick: (Int, Int) -> Unit,
+    onNavigateToDetailCourse: (Int) -> Unit
+) {
+    var hasNextPage by remember { mutableStateOf(false) }
+    var hasPreviousPage by remember { mutableStateOf(false) }
+
+    if (searchResponse.page.number < searchResponse.page.totalPages) {
+        hasNextPage = true
+    } else {
+        hasNextPage = false
+    }
+    if (searchResponse.page.number > 1) {
+        hasPreviousPage = true
+    } else {
+        hasPreviousPage = false
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        LazyColumn(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(searchResponse.content) { course ->
+                SearchItemScreen(course = course) { courseId ->
+                    onNavigateToDetailCourse(courseId)
+                }
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement  = when {
+                hasNextPage && hasPreviousPage -> Arrangement.SpaceBetween
+                hasNextPage || hasPreviousPage -> Arrangement.Center
+                else -> Arrangement.Start
+            },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (hasNextPage) {
+                Button(
+                    onClick = {
+                        onClick(searchResponse.page.number + 1, searchResponse.page.size)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.primary_400),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Xem thêm")
+                }
+            }
+            if (hasPreviousPage) {
+                Button(
+                    onClick = { onClick(searchResponse.page.number - 1, searchResponse.page.size) },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(id = R.color.primary_400),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Trở lại")
+                }
+            }
+
+        }
+    }
 }
 
 
@@ -130,7 +207,7 @@ fun ListCategories(
 
         ) {
             Column {
-                Text(text = "Top Search", fontSize = 16.sp, fontWeight = FontWeight(600))
+                Text(text = "Top Search", fontSize = 20.sp, fontWeight = FontWeight(600))
                 Spacer(modifier = Modifier.height(8.dp))
                 FlowRow(
                     modifier = Modifier.fillMaxWidth()
@@ -139,8 +216,7 @@ fun ListCategories(
                         Button(
                             onClick = { /*TODO*/ },
                             modifier = Modifier
-                                .width(72.dp)
-                                .heightIn(28.dp),
+                                .wrapContentSize(),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFFF7F7F7),
                                 contentColor = Color.Black
@@ -149,7 +225,7 @@ fun ListCategories(
                             Text(
                                 text = course,
                                 fontSize = 12.sp,
-                                fontWeight = FontWeight.SemiBold
+                                fontWeight = FontWeight(400)
                             )
                         }
                     }
@@ -164,7 +240,7 @@ fun ListCategories(
                 .padding(top = 8.dp)
         ) {
             Column {
-                Text(text = "Browse Category", fontSize = 16.sp, fontWeight = FontWeight(600))
+                Text(text = "Browse Category", fontSize = 20.sp, fontWeight = FontWeight(600))
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn {
                     items(categories) { category ->
@@ -190,7 +266,7 @@ fun CategoryItem(category: Category, navigationToCoursesOfCategory: (String, Str
         horizontalArrangement = Arrangement.SpaceBetween
 
     ) {
-        Text(text = category.title, fontSize = 12.sp, fontWeight = FontWeight(400))
+        Text(text = category.title, fontSize = 16.sp, fontWeight = FontWeight(500))
         Icon(
             painter = painterResource(id = R.drawable.ic_keyboard_arrow_right_24),
             contentDescription = null

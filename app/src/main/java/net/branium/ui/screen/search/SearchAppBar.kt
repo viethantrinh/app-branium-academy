@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -40,34 +41,22 @@ fun SearchBarCourse(
     searchViewModel: SearchViewModel,
 ) {
     val searchText by searchViewModel.searchText.collectAsState()
-    val isFocused by searchViewModel.isFocused.collectAsState()
+    val hasFocus by searchViewModel.isFocused.collectAsState()
 
     val focusRequester = remember { FocusRequester() }
-
-    val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-//    LaunchedEffect(isFocused) {
-//        Log.d("SearchBarCourses", "isFocused: $isFocused")
-//        if (!isFocused) {
-//            focusManager.clearFocus()
-//            Log.d("result", "Done - Focus cleared")
-//        }
-//    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (isFocused){
+        if (hasFocus){
             IconButton(
                 onClick = {
-                    searchViewModel.onSearchTextChange("")
-                    searchViewModel.updateFocusState(false)
-                    focusManager.moveFocus(FocusDirection.Right)  // Xóa focus khi mất focus
-                    Log.d("result Back", "Done")
-                    keyboardController?.hide()
+                    searchViewModel.onSearchTextChange("") // Xóa text
+                    focusManager.clearFocus()
                 },
                 modifier = Modifier.wrapContentSize()
             ) {
@@ -81,14 +70,11 @@ fun SearchBarCourse(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(4.dp)
                 .focusRequester(focusRequester)
                 .onFocusChanged { focusState ->
-                    searchViewModel.updateFocusState(focusState.isFocused)
-                    if (!focusState.isFocused) {
-                        focusManager.clearFocus()  // Xóa focus khi mất focus
-                        Log.d("result", "Done")
-                    }
+                    searchViewModel.updateFocusState(focusState.hasFocus)
+                    Log.d("HHHH", "SearchBarCourse: ${focusState.hasFocus}")
                 },
             placeholder = { Text("Search", fontSize = 10.sp, fontWeight = FontWeight(400)) },
             leadingIcon = {
@@ -114,8 +100,6 @@ fun SearchBarCourse(
 
         )
     }
-
-
 }
 
 
