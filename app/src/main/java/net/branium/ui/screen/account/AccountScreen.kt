@@ -1,6 +1,7 @@
 package net.branium.ui.screen.account
 
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -60,6 +61,7 @@ fun AccountScreen(
         userViewModel.getUserInfo()
     }
     val user by userViewModel.userInfo.collectAsState()
+    Log.d("user", user.toString())
 
     Column(
         modifier = Modifier

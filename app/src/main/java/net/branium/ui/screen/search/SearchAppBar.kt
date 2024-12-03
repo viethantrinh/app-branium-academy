@@ -76,12 +76,12 @@ fun SearchBarCourse(
                     searchViewModel.updateFocusState(focusState.hasFocus)
                     Log.d("HHHH", "SearchBarCourse: ${focusState.hasFocus}")
                 },
-            placeholder = { Text("Search", fontSize = 10.sp, fontWeight = FontWeight(400)) },
+            placeholder = { Text("Search", fontSize = 16.sp, fontWeight = FontWeight(400)) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
                     contentDescription = "Search",
-                    Modifier.size(12.dp)
+                    Modifier.size(16.dp)
                 )
             },
             trailingIcon = {
@@ -90,7 +90,7 @@ fun SearchBarCourse(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_filter_list_24),
                             contentDescription = "Filter",
-                            Modifier.size(15.dp, 10.dp)
+                            Modifier.size(16.dp)
                         )
                     }
                 }

@@ -62,6 +62,9 @@ fun SearchScreen(
     val isSearching by searchViewModel.isSearching.collectAsState()
     val isFocused by searchViewModel.isFocused.collectAsState()
 
+    var filterBySort by remember { mutableStateOf("")}
+    var filterByCategory by remember { mutableStateOf("")}
+
     val sheetState =
         androidx.compose.material.rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val showBottomSheet by searchViewModel.showBottomSheet.collectAsState()
@@ -71,7 +74,17 @@ fun SearchScreen(
             if (showBottomSheet) {
                 FilterBottomSheet(
                     categories = categories,
-                    onApplyFilter = {
+                    onApplyFilter = {sort, category ->
+                        filterBySort = sort
+                        filterByCategory = category
+                        //goi api truyen vao sorrt orr category
+                        Log.d("SearchScreen", "sheetContent: $sort $category")
+                        searchViewModel.pagingCourses(searchText, 1, 5, sort, category)
+                        searchViewModel.hideBottomSheet()
+                    },
+                    onCancelFilter = {
+                        filterBySort = ""
+                        filterByCategory = ""
                         searchViewModel.hideBottomSheet()
                     }
                 )
@@ -91,7 +104,7 @@ fun SearchScreen(
                 SearchResultScreen(
                     searchResponse = searchResult,
                     onClick = { pageNumber, pageSize ->
-                        searchViewModel.pagingCourses(searchText, pageNumber, pageSize)
+                        searchViewModel.pagingCourses(searchText, pageNumber, pageSize, filterBySort, filterByCategory)
                         Log.d("SearchScreen", "onClick: $searchResult")
                     },
                     onNavigateToDetailCourse = onNavigateToDetailCourse
@@ -102,6 +115,14 @@ fun SearchScreen(
                 categories = categories,
                 navigationToCoursesOfCategory = navigationToCoursesOfCategory
             )
+        }
+    }
+
+    LaunchedEffect(sheetState.currentValue) {
+        if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
+            searchViewModel.hideBottomSheet()
+        } else if (sheetState.currentValue == ModalBottomSheetValue.Expanded) {
+            searchViewModel.showBottomSheet()
         }
     }
 

@@ -22,12 +22,12 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class SearchViewModel
-@Inject constructor(private val searchRepository: SearchRepositoryImpl): ViewModel() {
+@Inject constructor(private val searchRepository: SearchRepositoryImpl) : ViewModel() {
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
     private val _isFocused = MutableStateFlow(false)
-    val isFocused : MutableStateFlow<Boolean> = _isFocused
+    val isFocused: MutableStateFlow<Boolean> = _isFocused
 
     private val _isSearching = MutableStateFlow(false)
     val isSearching = _isSearching.asStateFlow()
@@ -37,17 +37,20 @@ class SearchViewModel
 
 
     private val _searchResponse = MutableStateFlow(SearchResponse())
-    val searchResponse : MutableStateFlow<SearchResponse> = _searchResponse
+    val searchResponse: MutableStateFlow<SearchResponse> = _searchResponse
 
     fun onSearchTextChange(text: String) {
         _searchText.value = text
     }
+
     fun updateFocusState(focused: Boolean) {
         _isFocused.value = focused
     }
+
     fun showBottomSheet() {
         _showBottomSheet.value = true
     }
+
     fun hideBottomSheet() {
         _showBottomSheet.value = false
     }
@@ -59,18 +62,19 @@ class SearchViewModel
             .onEach { query ->
                 if (query.isNotEmpty()) {
                     getCourses(query)
-                }else {
+                } else {
                     _searchResponse.value = SearchResponse()
                 }
             }
             .launchIn(viewModelScope)
     }
+
     fun getCourses(query: String) {
         viewModelScope.launch {
             _isSearching.value = true
-            when(val response = searchRepository.getInfoByKeyword(keyword = query)) {
+            when (val response = searchRepository.getInfoByKeyword(keyword = query)) {
                 is ResultResponse.Success -> {
-                   _searchResponse.value = response.data ?: SearchResponse()
+                    _searchResponse.value = response.data ?: SearchResponse()
                 }
 
                 is ResultResponse.Error -> {
@@ -83,10 +87,17 @@ class SearchViewModel
         }
     }
 
-    fun pagingCourses(query: String, page: Int, size: Int) {
+    fun pagingCourses(query: String, page: Int, size: Int, sort: String, category: String) {
         viewModelScope.launch {
             _isSearching.value = true
-            when(val response = searchRepository.getInfoByKeyword(keyword = query, page = page, size = size)) {
+            when (val response = searchRepository
+                .getInfoByKeyword(
+                    keyword = query,
+                    page = page,
+                    size = size,
+                    sort = sort,
+                    category = category
+                )) {
                 is ResultResponse.Success -> {
                     _searchResponse.value = response.data ?: SearchResponse()
                 }

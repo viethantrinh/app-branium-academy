@@ -60,13 +60,13 @@ fun ExamScreen(examId: Int, examViewmodel: ExamViewmodel, navigationToViewResult
                 .padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 32.dp)
         ) {
             Text(
-                text = "Quiz test",
+                text = examData.title,
                 fontSize = 16.sp,
                 fontWeight = FontWeight(600)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = examData.questionCount.toString(),
+                text = "Câu hỏi câu hỏi: " + examData.questionCount.toString(),
                 fontSize = 12.sp,
                 fontWeight = FontWeight(400)
             )

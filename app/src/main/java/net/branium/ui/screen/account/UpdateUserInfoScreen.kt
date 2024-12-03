@@ -223,6 +223,7 @@ fun UpdateUserInfoScreen(
                         UserInfoRequest(firstName, lastName, false, dayOfBirth, phoneNumber)
 
                     userViewModel.updateUserInfo(userRequest)
+                    userViewModel.getUserInfo()
                     onUpdateSuccess()
                 },
                 modifier = Modifier
